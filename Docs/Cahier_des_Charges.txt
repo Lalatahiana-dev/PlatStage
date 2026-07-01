@@ -1,0 +1,193 @@
+# CAHIER DES CHARGES
+
+## Projet : PLATSTAGE
+
+### 1. Présentation du projet
+
+PLATSTAGE est une plateforme web destinée à faciliter la recherche de stages pour les étudiants et à simplifier le recrutement des stagiaires pour les entreprises. La plateforme permet aux étudiants de rechercher des offres de stage, de postuler en ligne et de suivre leurs candidatures. Les entreprises peuvent publier des offres et gérer les candidatures reçues.
+
+---
+
+## 2. Contexte
+
+De nombreux étudiants rencontrent des difficultés pour trouver des stages correspondant à leur profil et à leurs compétences. De leur côté, les entreprises ont souvent du mal à diffuser efficacement leurs offres et à sélectionner les candidats adaptés.
+
+Une plateforme centralisée permettrait de faciliter la mise en relation entre les étudiants et les entreprises.
+
+---
+
+## 3. Problématique
+
+Comment faciliter la recherche de stage pour les étudiants tout en offrant aux entreprises un moyen simple et efficace de publier des offres et de gérer les candidatures ?
+
+---
+
+## 4. Objectif Général
+
+Développer une plateforme web moderne permettant la mise en relation entre les étudiants à la recherche de stages et les entreprises proposant des opportunités professionnelles.
+
+---
+
+## 5. Objectifs Spécifiques
+
+* Permettre aux étudiants de créer un profil professionnel.
+* Permettre aux entreprises de publier des offres de stage.
+* Faciliter la recherche et le filtrage des offres.
+* Permettre l'envoi de candidatures en ligne.
+* Gérer les entretiens de recrutement.
+* Faciliter la communication entre étudiants et entreprises.
+* Fournir des notifications en temps réel.
+* Offrir une interface d'administration pour la gestion de la plateforme.
+
+---
+
+## 6. Utilisateurs
+
+### Étudiant
+
+Fonctionnalités :
+
+* Créer un compte.
+* Se connecter.
+* Modifier son profil.
+* Ajouter ses compétences.
+* Rechercher des offres.
+* Ajouter des offres en favoris.
+* Postuler à une offre.
+* Consulter ses candidatures.
+* Échanger avec les entreprises.
+* Recevoir des notifications.
+
+### Entreprise
+
+Fonctionnalités :
+
+* Créer un compte entreprise.
+* Publier une offre de stage.
+* Modifier ou supprimer une offre.
+* Consulter les candidatures reçues.
+* Planifier des entretiens.
+* Communiquer avec les étudiants.
+* Recevoir des notifications.
+
+### Administrateur
+
+Fonctionnalités :
+
+* Gérer les utilisateurs.
+* Gérer les entreprises.
+* Vérifier les entreprises.
+* Gérer les offres.
+* Consulter les statistiques.
+* Superviser la plateforme.
+
+---
+
+## 7. Fonctionnalités Principales
+
+### Authentification
+
+* Inscription.
+* Connexion.
+* Déconnexion.
+* Gestion des rôles.
+
+### Gestion des Profils
+
+* Profil étudiant.
+* Profil entreprise.
+* Gestion des compétences.
+
+### Gestion des Offres
+
+* Création d'offres.
+* Modification d'offres.
+* Suppression d'offres.
+* Recherche avancée.
+* Filtrage par catégorie.
+
+### Gestion des Candidatures
+
+* Soumission de candidature.
+* Consultation des candidatures.
+* Acceptation ou refus.
+
+### Gestion des Favoris
+
+* Ajout aux favoris.
+* Suppression des favoris.
+
+### Messagerie
+
+* Conversations privées.
+* Échange de messages.
+
+### Entretiens
+
+* Planification.
+* Suivi des entretiens.
+
+### Notifications
+
+* Nouvelles candidatures.
+* Réponses aux candidatures.
+* Messages reçus.
+* Entretiens programmés.
+
+---
+
+## 8. Technologies Utilisées
+
+### Frontend
+
+* React
+* Tailwind CSS
+* React Router
+* Axios
+* Zustand
+
+### Backend
+
+* NestJS
+* TypeScript
+* JWT
+* Bcrypt
+
+### Base de Données
+
+* PostgreSQL
+* Prisma ORM
+
+### Stockage
+
+* Cloudinary
+
+### Déploiement
+
+* Vercel
+* Render
+* Neon PostgreSQL
+
+---
+
+## 9. Architecture Générale
+
+Frontend (React)
+
+↓
+
+Backend API (NestJS)
+
+↓
+
+Base de données (PostgreSQL)
+
+↓
+
+Stockage fichiers (Cloudinary)
+
+---
+
+## 10. Résultat Attendu
+
+Une plateforme web performante, sécurisée et évolutive permettant aux étudiants de trouver facilement des stages et aux entreprises de recruter efficacement des stagiaires.

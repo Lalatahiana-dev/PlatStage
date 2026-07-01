@@ -1,0 +1,243 @@
+Tous les tables
+•	Table users
+CREATE TABLE users (
+    id_user SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    prenom VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+•	Table roles
+CREATE TABLE roles (
+    id_role SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL
+);
+
+•	Table user_roles
+CREATE TABLE user_roles (
+    id_user_role SERIAL PRIMARY KEY,
+
+    id_user INT NOT NULL,
+    id_role INT NOT NULL,
+
+    FOREIGN KEY (id_user)
+        REFERENCES users(id_user)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (id_role)
+        REFERENCES roles(id_role)
+        ON DELETE CASCADE,
+
+    UNIQUE(id_user, id_role)
+);
+
+•	Table student_profiles
+CREATE TABLE student_profiles (
+    id_student SERIAL PRIMARY KEY,
+    phone VARCHAR(30),
+    university VARCHAR(150),
+    level VARCHAR(50),
+    cv_url TEXT,
+    address TEXT,
+    photo_url TEXT,
+    id_user INT UNIQUE NOT NULL,
+
+    FOREIGN KEY (id_user)
+        REFERENCES users(id_user)
+        ON DELETE CASCADE
+);
+
+
+•	Table companies
+CREATE TABLE companies (
+    id_company SERIAL PRIMARY KEY,
+    company_name VARCHAR(150) NOT NULL,
+    sector VARCHAR(100),
+    description TEXT,
+    website VARCHAR(255),
+    logo_url TEXT,
+    address TEXT,
+    is_verified BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id_user INT UNIQUE NOT NULL,
+
+    FOREIGN KEY (id_user)
+        REFERENCES users(id_user)
+        ON DELETE CASCADE
+);
+
+•	Table skills
+CREATE TABLE skills (
+    id_skill SERIAL PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL
+);
+
+•	Table student_skills
+CREATE TABLE student_skills (
+    id_student_skill SERIAL PRIMARY KEY,
+
+    id_student INT NOT NULL,
+    id_skill INT NOT NULL,
+
+    FOREIGN KEY (id_student)
+        REFERENCES student_profiles(id_student)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (id_skill)
+        REFERENCES skills(id_skill)
+        ON DELETE CASCADE,
+
+    UNIQUE(id_student, id_skill)
+);
+
+•	Table categories
+CREATE TABLE categories (
+    id_category SERIAL PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL,
+	description TEXT
+);
+
+
+•	Table internship_offers
+CREATE TABLE internship_offers (
+    id_offer SERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    description TEXT NOT NULL,
+    requirements TEXT,
+    location VARCHAR(150),
+    salary DECIMAL(12,2),
+    deadline DATE,
+    status VARCHAR(20)
+        CHECK (status IN ('DRAFT','PUBLISHED','CLOSED')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id_company INT NOT NULL,
+
+    FOREIGN KEY (id_company)
+        REFERENCES companies(id_company)
+        ON DELETE CASCADE
+);
+
+•	Table offer_categories
+CREATE TABLE offer_categories (
+    id_offer_category SERIAL PRIMARY KEY,
+    id_offer INT NOT NULL,
+    id_category INT NOT NULL,
+
+    FOREIGN KEY (id_offer)
+        REFERENCES internship_offers(id_offer)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (id_category)
+        REFERENCES categories(id_category)
+        ON DELETE CASCADE,
+    UNIQUE(id_offer, id_category)
+);
+
+•	Table applications
+CREATE TABLE applications (
+    id_application SERIAL PRIMARY KEY,
+    motivation TEXT,
+    status VARCHAR(20)
+        CHECK (status IN ('EN_ATTENTE','ACCEPTEE','REFUSEE')),
+    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id_student INT NOT NULL,
+    id_offer INT NOT NULL,
+
+    FOREIGN KEY (id_student)
+        REFERENCES student_profiles(id_student),
+
+    FOREIGN KEY (id_offer)
+        REFERENCES internship_offers(id_offer),
+
+    UNIQUE (id_student, id_offer)
+);
+
+•	Table favorites
+CREATE TABLE favorites (
+    id_favorite SERIAL PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id_student INT NOT NULL,
+    id_offer INT NOT NULL,
+    FOREIGN KEY (id_student)
+        REFERENCES student_profiles(id_student)
+        ON DELETE CASCADE,
+    FOREIGN KEY (id_offer)
+        REFERENCES internship_offers(id_offer)
+        ON DELETE CASCADE,
+
+    UNIQUE(id_student, id_offer)
+);
+
+•	Table conversations
+CREATE TABLE conversations (
+    id_conversation SERIAL PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id_student INT NOT NULL,
+    id_company INT NOT NULL,
+    id_offer INT NOT NULL,
+
+    FOREIGN KEY (id_student)
+        REFERENCES student_profiles(id_student),
+
+    FOREIGN KEY (id_company)
+        REFERENCES companies(id_company),
+
+    FOREIGN KEY (id_offer)
+        REFERENCES internship_offers(id_offer)
+);
+
+•	Table messages
+CREATE TABLE messages (
+    id_message SERIAL PRIMARY KEY,
+    content TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id_conversation INT NOT NULL,
+    id_sender INT NOT NULL,
+
+    FOREIGN KEY (id_conversation)
+        REFERENCES conversations(id_conversation)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (id_sender)
+        REFERENCES users(id_user)
+        ON DELETE CASCADE
+);
+
+•	Table interviews
+CREATE TABLE interviews (
+    id_interview SERIAL PRIMARY KEY,
+    scheduled_at TIMESTAMP NOT NULL,
+    location VARCHAR(150),
+    type VARCHAR(20)
+        CHECK (type IN ('ONLINE','ON_SITE')),
+    status VARCHAR(20)
+        CHECK (status IN ('PENDING','CONFIRMED','CANCELLED')),
+    id_application INT UNIQUE NOT NULL,
+
+    FOREIGN KEY (id_application)
+        REFERENCES applications(id_application)
+        ON DELETE CASCADE
+);
+
+
+•	Table notifications
+CREATE TABLE notifications (
+    id_notification SERIAL PRIMARY KEY,
+    title VARCHAR(150),
+    content TEXT NOT NULL,
+    type VARCHAR(50),
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id_user INT NOT NULL,
+
+    FOREIGN KEY (id_user)
+        REFERENCES users(id_user)
+        ON DELETE CASCADE
+);

@@ -1,0 +1,9 @@
+Frontend : React + Tailwind
+
+Backend : NestJS
+
+Database : PostgreSQL + Prisma
+
+Storage : Cloudinary
+
+Deploy : Vercel + Render + Neon

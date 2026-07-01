@@ -1,0 +1,83 @@
+Setup → Auth → Core Features → Advanced Features → Cloud → Security → Deploy → Polish
+PLATSTAGE/
+│
+├── backend/                      # ⚙️ NestJS API
+│   ├── src/
+│   │   ├── modules/
+│   │   │   ├── auth/
+│   │   │   │   ├── auth.controller.ts
+│   │   │   │   ├── auth.service.ts
+│   │   │   │   ├── auth.module.ts
+│   │   │   │   └── dto/
+│   │   │   │
+│   │   │   ├── users/
+│   │   │   ├── students/
+│   │   │   ├── companies/
+│   │   │   ├── offers/
+│   │   │   ├── applications/
+│   │   │   ├── messages/
+│   │   │   ├── notifications/
+│   │   │   └── interviews/
+│   │   │
+│   │   ├── prisma/              # Prisma service
+│   │   ├── common/              # guards, filters, decorators
+│   │   ├── config/              # env config, database config
+│   │   ├── main.ts
+│   │   └── app.module.ts
+│   │
+│   ├── prisma/
+│   │   ├── schema.prisma
+│   │   └── migrations/
+│   │
+│   ├── .env
+│   ├── package.json
+│   └── nest-cli.json
+│
+│
+├── frontend/                    # 🎨 React App
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   │   ├── ui/
+│   │   │   ├── layout/
+│   │   │   └── shared/
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── auth/
+│   │   │   ├── student/
+│   │   │   ├── company/
+│   │   │   ├── offers/
+│   │   │   └── dashboard/
+│   │   │
+│   │   ├── services/            # API calls (axios)
+│   │   ├── context/            # Auth context
+│   │   ├── hooks/
+│   │   ├── routes/
+│   │   ├── utils/
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   │
+│   ├── public/
+│   ├── tailwind.config.js
+│   ├── vite.config.js
+│   └── package.json
+│
+│
+├── shared/                      # (OPTIONAL)
+│   └── types/                   # DTO types shared (frontend/backend)
+│
+│
+├── docs/                        # 📄 Documentation
+│   ├── architecture.md
+│   ├── database.sql
+│   ├── api-spec.md
+│   └── README.md
+│
+│
+├── docker/                      # (OPTIONAL)
+│   ├── backend.Dockerfile
+│   ├── frontend.Dockerfile
+│   └── docker-compose.yml
+│
+│
+└── README.md

@@ -1,0 +1,227 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id_user       Int             @id @default(autoincrement())
+  nom           String
+  prenom        String
+  email         String          @unique
+  password      String
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @updatedAt
+  company       Company?
+  messages      Message[]
+  notifications Notification[]
+  student       StudentProfile?
+  roles         UserRole[]
+}
+
+model Role {
+  id_role Int        @id @default(autoincrement())
+  name    String     @unique
+  users   UserRole[]
+}
+
+model UserRole {
+  id_user_role Int  @id @default(autoincrement())
+  id_user      Int
+  id_role      Int
+  role         Role @relation(fields: [id_role], references: [id_role], onDelete: Cascade)
+  user         User @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+
+  @@unique([id_user, id_role])
+}
+
+model StudentProfile {
+  id_student    Int            @id @default(autoincrement())
+  phone         String?
+  university    String?
+  level         String?
+  cv_url        String?
+  address       String?
+  photo_url     String?
+  id_user       Int            @unique
+  applications  Application[]
+  conversations Conversation[]
+  favorites     Favorite[]
+  user          User           @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+  skills        StudentSkill[]
+}
+
+model Company {
+  id_company    Int            @id @default(autoincrement())
+  company_name  String
+  sector        String?
+  description   String?
+  website       String?
+  logo_url      String?
+  address       String?
+  is_verified   Boolean        @default(false)
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+  id_user       Int            @unique
+  user          User           @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+  conversations Conversation[]
+  offers        Offer[]
+}
+
+model Skill {
+  id_skill Int            @id @default(autoincrement())
+  name     String         @unique
+  students StudentSkill[]
+}
+
+model StudentSkill {
+  id_student_skill Int            @id @default(autoincrement())
+  id_student       Int
+  id_skill         Int
+  skill            Skill          @relation(fields: [id_skill], references: [id_skill], onDelete: Cascade)
+  student          StudentProfile @relation(fields: [id_student], references: [id_student], onDelete: Cascade)
+
+  @@unique([id_student, id_skill])
+}
+
+model Category {
+  id_category Int             @id @default(autoincrement())
+  name        String          @unique
+  description String?
+  offers      OfferCategory[]
+}
+
+model Offer {
+  id_offer      Int             @id @default(autoincrement())
+  title         String
+  description   String
+  requirements  String?
+  location      String?
+  salary        Float?
+  deadline      DateTime?
+  status        OfferStatus     @default(DRAFT)
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @updatedAt
+  id_company    Int
+  applications  Application[]
+  conversations Conversation[]
+  favorites     Favorite[]
+  company       Company         @relation(fields: [id_company], references: [id_company], onDelete: Cascade)
+  categories    OfferCategory[]
+}
+
+model OfferCategory {
+  id_offer_category Int      @id @default(autoincrement())
+  id_offer          Int
+  id_category       Int
+  category          Category @relation(fields: [id_category], references: [id_category], onDelete: Cascade)
+  offer             Offer    @relation(fields: [id_offer], references: [id_offer], onDelete: Cascade)
+
+  @@unique([id_offer, id_category])
+}
+
+model Application {
+  id_application Int               @id @default(autoincrement())
+  motivation     String?
+  status         ApplicationStatus @default(EN_ATTENTE)
+  applied_at     DateTime          @default(now())
+  updated_at     DateTime          @updatedAt
+  id_student     Int
+  id_offer       Int
+  offer          Offer             @relation(fields: [id_offer], references: [id_offer], onDelete: Cascade)
+  student        StudentProfile    @relation(fields: [id_student], references: [id_student], onDelete: Cascade)
+  interview      Interview?
+
+  @@unique([id_student, id_offer])
+}
+
+model Favorite {
+  id_favorite Int            @id @default(autoincrement())
+  created_at  DateTime       @default(now())
+  id_student  Int
+  id_offer    Int
+  offer       Offer          @relation(fields: [id_offer], references: [id_offer], onDelete: Cascade)
+  student     StudentProfile @relation(fields: [id_student], references: [id_student], onDelete: Cascade)
+
+  @@unique([id_student, id_offer])
+}
+
+model Conversation {
+  id_conversation Int            @id @default(autoincrement())
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
+  id_student      Int
+  id_company      Int
+  id_offer        Int
+  company         Company        @relation(fields: [id_company], references: [id_company], onDelete: Cascade)
+  offer           Offer          @relation(fields: [id_offer], references: [id_offer], onDelete: Cascade)
+  student         StudentProfile @relation(fields: [id_student], references: [id_student], onDelete: Cascade)
+  messages        Message[]
+
+  @@unique([id_student, id_company, id_offer])
+}
+
+model Message {
+  id_message      Int          @id @default(autoincrement())
+  content         String
+  is_read         Boolean      @default(false)
+  sent_at         DateTime     @default(now())
+  id_conversation Int
+  id_sender       Int
+  conversation    Conversation @relation(fields: [id_conversation], references: [id_conversation], onDelete: Cascade)
+  sender          User         @relation(fields: [id_sender], references: [id_user], onDelete: Cascade)
+}
+
+model Interview {
+  id_interview   Int             @id @default(autoincrement())
+  scheduled_at   DateTime
+  location       String?
+  type           InterviewType
+  status         InterviewStatus @default(PENDING)
+  id_application Int             @unique
+  application    Application     @relation(fields: [id_application], references: [id_application], onDelete: Cascade)
+}
+
+model Notification {
+  id_notification Int               @id @default(autoincrement())
+  title           String?
+  content         String
+  type            NotificationType?
+  is_read         Boolean           @default(false)
+  created_at      DateTime          @default(now())
+  id_user         Int
+  user            User              @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+}
+
+enum OfferStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+}
+
+enum ApplicationStatus {
+  EN_ATTENTE
+  ACCEPTEE
+  REFUSEE
+}
+
+enum InterviewType {
+  ONLINE
+  ON_SITE
+}
+
+enum InterviewStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum NotificationType {
+  NEW_APPLICATION
+  ACCEPTED
+  REFUSED
+  NEW_MESSAGE
+}

@@ -1,0 +1,259 @@
+# MCD (Modèle Conceptuel de Données)
+
+## Projet : PLATSTAGE
+
+### Entités principales
+
+#### UTILISATEUR
+
+Attributs :
+
+* id
+* nom
+* prenom
+* email
+* password
+* created_at
+* updated_at
+
+---
+
+#### ROLE
+
+Attributs :
+
+* id
+* name
+
+Exemples :
+
+* ADMIN
+* STUDENT
+* COMPANY
+
+---
+
+#### ETUDIANT
+
+Attributs :
+
+* id
+* user_id
+* phone
+* address
+* university
+* level
+* cv_url
+* photo_url
+
+---
+
+#### ENTREPRISE
+
+Attributs :
+
+* id
+* user_id
+* company_name
+* description
+* sector
+* website
+* logo_url
+* address
+* is_verified
+
+---
+
+#### COMPETENCE
+
+Attributs :
+
+* id
+* name
+
+---
+
+#### CATEGORIE
+
+Attributs :
+
+* id
+* name
+* description
+
+---
+
+#### OFFRE DE STAGE
+
+Attributs :
+
+* id
+* company_id
+* title
+* description
+* location
+* duration
+* salary
+* requirements
+* deadline
+* status
+* created_at
+* updated_at
+
+---
+
+#### CANDIDATURE
+
+Attributs :
+
+* id
+* student_id
+* offer_id
+* motivation
+* status
+* applied_at
+* updated_at
+
+---
+
+#### FAVORI
+
+Attributs :
+
+* id
+* student_id
+* offer_id
+* created_at
+
+---
+
+#### CONVERSATION
+
+Attributs :
+
+* id
+* student_id
+* company_id
+* created_at
+
+---
+
+#### MESSAGE
+
+Attributs :
+
+* id
+* conversation_id
+* sender_id
+* content
+* is_read
+* created_at
+
+---
+
+#### ENTRETIEN
+
+Attributs :
+
+* id
+* application_id
+* scheduled_at
+* location
+* meeting_link
+* status
+* notes
+* created_at
+
+---
+
+#### NOTIFICATION
+
+Attributs :
+
+* id
+* user_id
+* title
+* message
+* type
+* is_read
+* created_at
+
+---
+
+### Relations
+
+ROLE
+|
+AVOIR
+|
+UTILISATEUR
+
+UTILISATEUR
+|
+ETRE
+|
+ETUDIANT
+
+UTILISATEUR
+|
+ETRE
+|
+ENTREPRISE
+
+ETUDIANT
+|
+POSSEDER
+|
+COMPETENCE
+
+ENTREPRISE
+|
+PUBLIER
+|
+OFFRE DE STAGE
+
+OFFRE DE STAGE
+|
+CLASSER
+|
+CATEGORIE
+
+ETUDIANT
+|
+CANDIDATER
+|
+OFFRE DE STAGE
+
+CANDIDATURE
+|
+MENER A
+|
+ENTRETIEN
+
+ETUDIANT
+|
+AJOUTER
+|
+FAVORI
+|
+CONCERNER
+|
+OFFRE DE STAGE
+
+ETUDIANT
+|
+CONVERSATION
+|
+ENTREPRISE
+
+CONVERSATION
+|
+CONTENIR
+|
+MESSAGE
+
+UTILISATEUR
+|
+RECEVOIR
+|
+NOTIFICATION
