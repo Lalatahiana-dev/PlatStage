@@ -1,6 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { InterviewType, InterviewStatus } from '@prisma/client';
+import { InterviewType, InterviewStatus, Prisma } from '@prisma/client';
 
 @Injectable()
 export class InterviewService {
@@ -88,7 +92,6 @@ export class InterviewService {
     return interview;
   }
 
-  // ✅ MANAMPY ITY
   async findByApplication(id_application: number) {
     return this.prisma.interview.findFirst({
       where: { id_application },
@@ -115,13 +118,63 @@ export class InterviewService {
     });
   }
 
+  async findByCompany(id_company: number) {
+    return this.prisma.interview.findMany({
+      where: {
+        application: {
+          offer: {
+            id_company,
+          },
+        },
+      },
+      select: {
+        id_interview: true,
+        scheduled_at: true,
+        location: true,
+        type: true,
+        status: true,
+        application: {
+          select: {
+            id_application: true,
+            offer: {
+              select: {
+                title: true,
+                company: { select: { company_name: true } },
+              },
+            },
+            student: {
+              select: {
+                user: {
+                  select: { nom: true, prenom: true, email: true },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   async create(data: {
     scheduled_at: Date;
     location?: string;
     type: InterviewType;
     id_application: number;
   }) {
-    return this.prisma.interview.create({ data });
+    try {
+      return await this.prisma.interview.create({ data });
+    } catch (e) {
+      // P2002 = Unique constraint failed — efa misy interview ho an'ity application ity
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          'Un entretien existe déjà pour cette candidature',
+        );
+      }
+      throw e;
+    }
   }
 
   async update(
@@ -133,6 +186,12 @@ export class InterviewService {
       status?: InterviewStatus;
     },
   ) {
+    const interview = await this.prisma.interview.findUnique({
+      where: { id_interview },
+    });
+
+    if (!interview) throw new NotFoundException('Interview not found');
+
     return this.prisma.interview.update({
       where: { id_interview },
       data,

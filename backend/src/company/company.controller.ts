@@ -45,9 +45,9 @@ export class CompanyController {
 
   @Put(':id')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Manova company (ADMIN)' })
+  @ApiOperation({ summary: 'Manova company (ADMIN/COMPANY)' })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'COMPANY') // ✅ COMPANY manampy
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateCompanyDto,

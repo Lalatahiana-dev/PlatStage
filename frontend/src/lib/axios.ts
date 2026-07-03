@@ -8,7 +8,6 @@ const api = axios.create({
   },
 });
 
-// Manampy token amin'ny request rehetra
 api.interceptors.request.use((config) => {
   const token = Cookies.get('token');
   if (token) {
@@ -16,5 +15,17 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Redirect ho login raha 401 ONLY (token invalid/expired)
+    if (error.response?.status === 401) {
+      Cookies.remove('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default api;

@@ -32,24 +32,25 @@ const typeConfig = {
   ON_SITE: { label: 'Sur site', icon: 'ti-building', color: 'bg-purple-50 text-purple-600' },
 };
 
-export default function CompanyInterviewsPage() {
+export default function AdminInterviewsPage() {
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<'ALL' | 'PENDING' | 'CONFIRMED' | 'CANCELLED'>('ALL');
   const [updating, setUpdating] = useState<number | null>(null);
 
   useEffect(() => {
-  const loadInterviews = async () => {
-    try {
-      const res = await api.get('/interviews/company/2'); // ✅ id_company
-      setInterviews(res.data);
-    } catch {
-      console.error('Erreur fetch interviews');
-    } finally {
-      setLoading(false);
-    }
-  };
-  loadInterviews();
-}, []);
+    const loadInterviews = async () => {
+      try {
+        const res = await api.get('/interviews');
+        setInterviews(res.data);
+      } catch {
+        console.error('Erreur fetch interviews');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadInterviews();
+  }, []);
 
   const handleStatusChange = async (id_interview: number, status: string) => {
     setUpdating(id_interview);
@@ -69,18 +70,45 @@ export default function CompanyInterviewsPage() {
     }
   };
 
+  const filtered = interviews.filter(
+    (i) => filter === 'ALL' || i.status === filter
+  );
+
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-1">Entretiens</h1>
-        <p className="text-sm text-gray-500">Gérez les entretiens planifiés.</p>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-semibold text-gray-800 mb-1">Entretiens</h1>
+          <p className="text-sm text-gray-500">Gérez tous les entretiens planifiés.</p>
+        </div>
+        <div className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium">
+          {interviews.length} entretiens
+        </div>
       </div>
 
+      {/* Filter */}
+      <div className="flex gap-2 mb-6">
+        {(['ALL', 'PENDING', 'CONFIRMED', 'CANCELLED'] as const).map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`px-3 py-2 text-xs rounded-lg transition ${
+              filter === f
+                ? 'bg-indigo-600 text-white'
+                : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            {f === 'ALL' ? 'Tous' : statusConfig[f].label}
+          </button>
+        ))}
+      </div>
+
+      {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         {[
-          { label: 'Total', value: interviews.length, color: 'indigo', icon: 'ti-calendar' },
           { label: 'En attente', value: interviews.filter(i => i.status === 'PENDING').length, color: 'yellow', icon: 'ti-clock' },
           { label: 'Confirmés', value: interviews.filter(i => i.status === 'CONFIRMED').length, color: 'green', icon: 'ti-circle-check' },
+          { label: 'Annulés', value: interviews.filter(i => i.status === 'CANCELLED').length, color: 'red', icon: 'ti-circle-x' },
         ].map((s) => (
           <div key={s.label} className="bg-white border border-gray-100 rounded-xl p-4 flex items-center gap-3">
             <div className={`w-10 h-10 rounded-lg flex items-center justify-center bg-${s.color}-50 text-${s.color}-600`}>
@@ -96,14 +124,14 @@ export default function CompanyInterviewsPage() {
 
       {loading ? (
         <div className="text-sm text-gray-400">Chargement...</div>
-      ) : interviews.length === 0 ? (
+      ) : filtered.length === 0 ? (
         <div className="bg-white border border-gray-100 rounded-xl p-8 text-center">
           <i className="ti ti-calendar text-4xl text-gray-300 mb-2 block"></i>
-          <p className="text-sm text-gray-400">Aucun entretien planifié.</p>
+          <p className="text-sm text-gray-400">Aucun entretien trouvé.</p>
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          {interviews.map((interview) => {
+          {filtered.map((interview) => {
             const status = statusConfig[interview.status];
             const type = typeConfig[interview.type];
             return (
@@ -119,10 +147,17 @@ export default function CompanyInterviewsPage() {
                         {interview.application.student.user.prenom}{' '}
                         {interview.application.student.user.nom}
                       </h3>
-                      <p className="text-xs text-gray-400">{interview.application.offer.title}</p>
+                      <p className="text-xs text-gray-400">
+                        {interview.application.student.user.email}
+                      </p>
+                      <p className="text-xs text-indigo-500 mt-1">
+                        <i className="ti ti-briefcase mr-1"></i>
+                        {interview.application.offer.title} —{' '}
+                        {interview.application.offer.company.company_name}
+                      </p>
                       {interview.location && (
-                        <p className="text-xs text-gray-400 flex items-center gap-1 mt-1">
-                          <i className="ti ti-map-pin text-xs"></i>
+                        <p className="text-xs text-gray-400 mt-1">
+                          <i className="ti ti-map-pin mr-1"></i>
                           {interview.location}
                         </p>
                       )}

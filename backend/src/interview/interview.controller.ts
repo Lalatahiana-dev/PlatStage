@@ -31,12 +31,20 @@ export class InterviewController {
     return this.interviewService.findAll();
   }
 
-  // ✅ MANAMPY ITY — alohan'ny :id mba tsy hifangaro
   @Get('application/:id')
   @ApiOperation({ summary: "Mahita interview an'ny application" })
   @UseGuards(AuthGuard('jwt'))
   findByApplication(@Param('id', ParseIntPipe) id: number) {
     return this.interviewService.findByApplication(id);
+  }
+
+  // ✅ MANAMPY ITY — alohan'ny :id
+  @Get('company/:id')
+  @ApiOperation({ summary: "Mahita interviews an'ny company (COMPANY/ADMIN)" })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('COMPANY', 'ADMIN')
+  findByCompany(@Param('id', ParseIntPipe) id: number) {
+    return this.interviewService.findByCompany(id);
   }
 
   @Get(':id')
