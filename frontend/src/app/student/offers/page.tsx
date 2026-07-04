@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import api from '@/lib/axios';
 
 interface Offer {
@@ -20,14 +21,16 @@ interface Offer {
   categories: { category: { id_category: number; name: string } }[];
 }
 
-export default function StudentOffersPage() {
+function OffersContent() {
+  const searchParams = useSearchParams();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(searchParams.get('q') ?? '');
   const [applying, setApplying] = useState<number | null>(null);
   const [success, setSuccess] = useState<number | null>(null);
   const [error, setError] = useState<number | null>(null);
 
+  
   useEffect(() => {
     const fetchOffers = async () => {
       try {
@@ -47,7 +50,7 @@ export default function StudentOffersPage() {
     setError(null);
     try {
       await api.post('/applications', {
-        id_student: 2, // id_student — à dynamiser plus tard
+        id_student: 2,
         id_offer,
         motivation: '',
       });
@@ -68,13 +71,11 @@ export default function StudentOffersPage() {
 
   return (
     <div>
-      {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-gray-800 mb-1">Offres de stage</h1>
         <p className="text-sm text-gray-500">Découvrez les offres disponibles et postulez en un clic.</p>
       </div>
 
-      {/* Search */}
       <div className="flex items-center gap-2 bg-white border border-gray-100 rounded-xl px-4 py-3 mb-6">
         <i className="ti ti-search text-gray-400"></i>
         <input
@@ -84,22 +85,28 @@ export default function StudentOffersPage() {
           onChange={(e) => setSearch(e.target.value)}
           className="flex-1 text-sm outline-none text-gray-700 placeholder-gray-400"
         />
+        {search && (
+          <button onClick={() => setSearch('')} className="text-gray-400 hover:text-gray-600">
+            <i className="ti ti-x text-xs"></i>
+          </button>
+        )}
       </div>
 
-      {/* Offers list */}
       {loading ? (
         <div className="text-sm text-gray-400">Chargement...</div>
       ) : filtered.length === 0 ? (
-        <div className="text-sm text-gray-400">Aucune offre trouvée.</div>
+        <div className="bg-white border border-gray-100 rounded-xl p-8 text-center">
+          <i className="ti ti-search text-4xl text-gray-300 mb-2 block"></i>
+          <p className="text-sm text-gray-400">Aucune offre trouvée pour &quot;{search}&quot;</p>
+          <button onClick={() => setSearch('')} className="text-xs text-indigo-500 mt-2 hover:underline">
+            Effacer la recherche
+          </button>
+        </div>
       ) : (
         <div className="flex flex-col gap-4">
           {filtered.map((offer) => (
-            <div
-              key={offer.id_offer}
-              className="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-sm transition"
-            >
+            <div key={offer.id_offer} className="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-sm transition">
               <div className="flex items-start justify-between">
-                {/* Left */}
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-sm flex-shrink-0">
@@ -113,7 +120,6 @@ export default function StudentOffersPage() {
 
                   <p className="text-sm text-gray-500 mt-2 mb-3 line-clamp-2">{offer.description}</p>
 
-                  {/* Tags */}
                   <div className="flex flex-wrap gap-2">
                     {offer.location && (
                       <span className="flex items-center gap-1 text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-lg">
@@ -141,7 +147,6 @@ export default function StudentOffersPage() {
                   </div>
                 </div>
 
-                {/* Right — Apply button */}
                 <div className="flex flex-col items-end gap-2 ml-4 flex-shrink-0">
                   {success === offer.id_offer ? (
                     <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-3 py-2 rounded-lg">
@@ -169,5 +174,13 @@ export default function StudentOffersPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function StudentOffersPage() {
+  return (
+    <Suspense fallback={<div className="text-sm text-gray-400">Chargement...</div>}>
+      <OffersContent />
+    </Suspense>
   );
 }

@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
+import { RolesService } from '../roles/roles.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
@@ -20,26 +21,30 @@ type UserWithRoles = {
 export class AuthService {
   constructor(
     private usersService: UsersService,
+    private rolesService: RolesService, // ✅ manampy
     private jwtService: JwtService,
   ) {}
 
-  async register(data: RegisterDto) {
+  async register(data: RegisterDto & { role?: string }) {
     const existingUser = await this.usersService.findByEmail(data.email);
-
-    if (existingUser) {
-      throw new UnauthorizedException('Email already used');
-    }
+    if (existingUser) throw new UnauthorizedException('Email already used');
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    const user: UserWithRoles = await this.usersService.create({
+    const user = await this.usersService.create({
       nom: data.nom,
       prenom: data.prenom,
       email: data.email,
       password: hashedPassword,
     });
 
-    return this.signToken(user);
+    // ✅ Assign role — STUDENT na COMPANY ihany, tsy ADMIN
+    const roleName = data.role === 'COMPANY' ? 'COMPANY' : 'STUDENT';
+    await this.rolesService.assignDefaultRole(user.id_user, roleName);
+
+    // ✅ Averina user miaraka amin'ny roles vaovao
+    const userWithRoles = await this.usersService.findByEmail(data.email);
+    return this.signToken(userWithRoles as UserWithRoles);
   }
 
   async login(data: LoginDto) {
@@ -47,15 +52,10 @@ export class AuthService {
       data.email,
     );
 
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+    if (!user) throw new UnauthorizedException('Invalid credentials');
 
     const passwordMatch = await bcrypt.compare(data.password, user.password);
-
-    if (!passwordMatch) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+    if (!passwordMatch) throw new UnauthorizedException('Invalid credentials');
 
     return this.signToken(user);
   }
