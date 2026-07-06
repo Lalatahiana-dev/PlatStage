@@ -38,7 +38,13 @@ export class StudentController {
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return this.studentService.findOne(id);
   }
-
+  @Get('user/:id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Mahita student profile arakaraka ny id_user' })
+  @UseGuards(AuthGuard('jwt'))
+  async findByUser(@Param('id', ParseIntPipe) id: number) {
+    return this.studentService.findByUser(id);
+  }
   @Post()
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Mamorona student profile (STUDENT/ADMIN)' })

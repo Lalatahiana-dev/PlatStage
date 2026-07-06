@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
-import { useAuthStore } from '@/store/auth.store';
-import { useRouter, usePathname } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
-import Link from 'next/link';
-import api from '@/lib/axios';
+import { useAuthStore } from "@/store/auth.store";
+import { useRouter, usePathname } from "next/navigation";
+import { useEffect, useState, useRef } from "react";
+import Link from "next/link";
+import api from "@/lib/axios";
+import { useHydrated } from "@/hooks/useHydrated";
 
 interface Notification {
   id_notification: number;
@@ -15,19 +16,24 @@ interface Notification {
   created_at: string;
 }
 
-export default function StudentLayout({ children }: { children: React.ReactNode }) {
+export default function StudentLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { user, logout } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
+  const mounted = useHydrated();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotif, setShowNotif] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!user) router.push('/login');
-    else if (!user.roles.includes('STUDENT') && !user.roles.includes('ADMIN')) {
-      router.push('/');
+    if (!user) router.push("/login");
+    else if (!user.roles.includes("STUDENT") && !user.roles.includes("ADMIN")) {
+      router.push("/");
     }
   }, [user, router]);
 
@@ -36,8 +42,19 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
       try {
         const res = await api.get(`/notifications/user/${user?.userId}`);
         setNotifications(res.data);
-      } catch {
-        console.error('Erreur fetch notifications');
+      } catch (err: unknown) {
+        if (err && typeof err === "object" && "response" in err) {
+          const axiosErr = err as {
+            response: { data: unknown; status: number };
+          };
+          console.error(
+            "Notif error:",
+            JSON.stringify(axiosErr.response.data),
+            axiosErr.response.status,
+          );
+        } else {
+          console.error("Notif unknown error:", err);
+        }
       }
     };
     if (user) loadNotifications();
@@ -50,18 +67,27 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
         setShowNotif(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleMarkAsRead = async (id_notification: number) => {
     try {
       await api.put(`/notifications/${id_notification}/read`);
       setNotifications((prev) =>
-        prev.map((n) => n.id_notification === id_notification ? { ...n, is_read: true } : n)
+        prev.map((n) =>
+          n.id_notification === id_notification ? { ...n, is_read: true } : n,
+        ),
       );
-    } catch {
-      console.error('Erreur mark as read');
+    } catch (err: unknown) {
+      if (err && typeof err === "object" && "response" in err) {
+        const axiosErr = err as { response: { data: unknown; status: number } };
+        console.error(
+          "Mark as read error:",
+          JSON.stringify(axiosErr.response.data),
+          axiosErr.response.status,
+        );
+      }
     }
   };
 
@@ -70,34 +96,38 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
       await api.put(`/notifications/user/${user?.userId}/read-all`);
       setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
     } catch {
-      console.error('Erreur mark all as read');
+      console.error("Erreur mark all as read");
     }
   };
 
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && search.trim()) {
+    if (e.key === "Enter" && search.trim()) {
       router.push(`/student/offers?q=${encodeURIComponent(search.trim())}`);
-      setSearch('');
+      setSearch("");
     }
   };
 
   const navItems = [
-    { href: '/student', icon: 'ti-home', label: 'Accueil' },
-    { href: '/student/offers', icon: 'ti-search', label: 'Offres de stage' },
-    { href: '/student/applications', icon: 'ti-file-text', label: 'Mes candidatures' },
-    { href: '/student/interviews', icon: 'ti-calendar', label: 'Entretiens' },
-    { href: '/student/favorites', icon: 'ti-heart', label: 'Favoris' },
-    { href: '/student/messages', icon: 'ti-message', label: 'Messages' },
-    { href: '/student/profile', icon: 'ti-user', label: 'Profil' },
+    { href: "/student", icon: "ti-home", label: "Accueil" },
+    { href: "/student/offers", icon: "ti-search", label: "Offres de stage" },
+    {
+      href: "/student/applications",
+      icon: "ti-file-text",
+      label: "Mes candidatures",
+    },
+    { href: "/student/interviews", icon: "ti-calendar", label: "Entretiens" },
+    { href: "/student/favorites", icon: "ti-heart", label: "Favoris" },
+    { href: "/student/messages", icon: "ti-message", label: "Messages" },
+    { href: "/student/profile", icon: "ti-user", label: "Profil" },
   ];
 
   const typeIcons: Record<string, string> = {
-    NEW_APPLICATION: 'ti-file-text',
-    ACCEPTED: 'ti-circle-check',
-    REFUSED: 'ti-circle-x',
-    NEW_MESSAGE: 'ti-message',
+    NEW_APPLICATION: "ti-file-text",
+    ACCEPTED: "ti-circle-check",
+    REFUSED: "ti-circle-x",
+    NEW_MESSAGE: "ti-message",
   };
 
   return (
@@ -121,8 +151,8 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
               href={item.href}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition ${
                 pathname === item.href
-                  ? 'bg-indigo-50 text-indigo-600 font-medium'
-                  : 'text-gray-500 hover:bg-gray-50'
+                  ? "bg-indigo-50 text-indigo-600 font-medium"
+                  : "text-gray-500 hover:bg-gray-50"
               }`}
             >
               <i className={`ti ${item.icon} text-base`}></i>
@@ -132,16 +162,25 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
         </nav>
 
         <div className="bg-gray-50 rounded-xl p-3 border border-gray-100 mt-4">
-          <div className="text-xs font-medium text-gray-700 mb-1">Complétez votre profil</div>
-          <div className="text-xs text-gray-400 mb-2">Un profil complet augmente vos chances.</div>
+          <div className="text-xs font-medium text-gray-700 mb-1">
+            Complétez votre profil
+          </div>
+          <div className="text-xs text-gray-400 mb-2">
+            Un profil complet augmente vos chances.
+          </div>
           <div className="bg-gray-200 rounded-full h-1 mb-1">
             <div className="bg-indigo-500 h-1 rounded-full w-4/5"></div>
           </div>
-          <div className="text-xs text-indigo-500 font-medium">80% — Continuer →</div>
+          <div className="text-xs text-indigo-500 font-medium">
+            80% — Continuer →
+          </div>
         </div>
 
         <button
-          onClick={() => { logout(); router.push('/login'); }}
+          onClick={() => {
+            logout();
+            router.push("/login");
+          }}
           className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-400 hover:bg-red-50 mt-2 transition"
         >
           <i className="ti ti-logout text-base"></i>
@@ -162,7 +201,10 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
               className="flex-1 text-sm outline-none bg-transparent text-gray-700 placeholder-gray-400"
             />
             {search && (
-              <button onClick={() => setSearch('')} className="text-gray-400 hover:text-gray-600">
+              <button
+                onClick={() => setSearch("")}
+                className="text-gray-400 hover:text-gray-600"
+              >
                 <i className="ti ti-x text-xs"></i>
               </button>
             )}
@@ -177,7 +219,9 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
               <i className="ti ti-bell text-gray-500 text-lg"></i>
               {unreadCount > 0 && (
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">{unreadCount}</span>
+                  <span className="text-white text-xs font-bold">
+                    {unreadCount}
+                  </span>
                 </div>
               )}
             </button>
@@ -186,7 +230,9 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
             {showNotif && (
               <div className="absolute right-0 top-10 w-80 bg-white border border-gray-100 rounded-xl shadow-lg z-50">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-                  <h3 className="text-sm font-semibold text-gray-800">Notifications</h3>
+                  <h3 className="text-sm font-semibold text-gray-800">
+                    Notifications
+                  </h3>
                   {unreadCount > 0 && (
                     <button
                       onClick={handleMarkAllAsRead}
@@ -201,7 +247,9 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
                   {notifications.length === 0 ? (
                     <div className="p-6 text-center">
                       <i className="ti ti-bell text-3xl text-gray-300 block mb-2"></i>
-                      <p className="text-xs text-gray-400">Aucune notification</p>
+                      <p className="text-xs text-gray-400">
+                        Aucune notification
+                      </p>
                     </div>
                   ) : (
                     notifications.map((notif) => (
@@ -209,21 +257,33 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
                         key={notif.id_notification}
                         onClick={() => handleMarkAsRead(notif.id_notification)}
                         className={`flex items-start gap-3 px-4 py-3 border-b border-gray-50 cursor-pointer hover:bg-gray-50 transition ${
-                          !notif.is_read ? 'bg-indigo-50' : ''
+                          !notif.is_read ? "bg-indigo-50" : ""
                         }`}
                       >
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                          !notif.is_read ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-400'
-                        }`}>
-                          <i className={`ti ${typeIcons[notif.type ?? ''] ?? 'ti-bell'} text-sm`}></i>
+                        <div
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                            !notif.is_read
+                              ? "bg-indigo-100 text-indigo-600"
+                              : "bg-gray-100 text-gray-400"
+                          }`}
+                        >
+                          <i
+                            className={`ti ${typeIcons[notif.type ?? ""] ?? "ti-bell"} text-sm`}
+                          ></i>
                         </div>
                         <div className="flex-1 min-w-0">
                           {notif.title && (
-                            <p className="text-xs font-semibold text-gray-800 mb-0.5">{notif.title}</p>
+                            <p className="text-xs font-semibold text-gray-800 mb-0.5">
+                              {notif.title}
+                            </p>
                           )}
-                          <p className="text-xs text-gray-500 line-clamp-2">{notif.content}</p>
+                          <p className="text-xs text-gray-500 line-clamp-2">
+                            {notif.content}
+                          </p>
                           <p className="text-xs text-gray-400 mt-1">
-                            {new Date(notif.created_at).toLocaleDateString('fr-FR')}
+                            {new Date(notif.created_at).toLocaleDateString(
+                              "fr-FR",
+                            )}
                           </p>
                         </div>
                         {!notif.is_read && (
@@ -239,18 +299,18 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
 
           <div className="flex items-center gap-2 cursor-pointer">
             <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-xs font-medium text-indigo-600">
-              {user?.email.charAt(0).toUpperCase()}
+              {mounted ? (user?.email?.charAt(0).toUpperCase() ?? "?") : ""}
             </div>
             <div>
-              <div className="text-xs font-medium text-gray-700">{user?.email}</div>
+              <div className="text-xs font-medium text-gray-700">
+                {mounted ? (user?.email ?? "") : ""}
+              </div>
               <div className="text-xs text-gray-400">Étudiant</div>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 p-8">
-          {children}
-        </main>
+        <main className="flex-1 p-8">{children}</main>
       </div>
     </div>
   );

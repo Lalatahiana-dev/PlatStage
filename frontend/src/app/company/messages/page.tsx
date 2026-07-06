@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import api from '@/lib/axios';
+import { useEffect, useState } from "react";
+import api from "@/lib/axios";
 
 interface Conversation {
   id_conversation: number;
@@ -27,17 +27,17 @@ export default function CompanyMessagesPage() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selected, setSelected] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
 
   useEffect(() => {
     const loadConversations = async () => {
       try {
-        const res = await api.get('/conversations/company/2'); // id_company
+        const res = await api.get("/conversations/company/2"); // id_company
         setConversations(res.data);
       } catch {
-        console.error('Erreur fetch conversations');
+        console.error("Erreur fetch conversations");
       } finally {
         setLoading(false);
       }
@@ -48,10 +48,12 @@ export default function CompanyMessagesPage() {
   const openConversation = async (conv: Conversation) => {
     setSelected(conv);
     try {
-      const res = await api.get(`/messages/conversation/${conv.id_conversation}`);
+      const res = await api.get(
+        `/messages/conversation/${conv.id_conversation}`,
+      );
       setMessages(res.data);
     } catch {
-      console.error('Erreur fetch messages');
+      console.error("Erreur fetch messages");
     }
   };
 
@@ -59,16 +61,18 @@ export default function CompanyMessagesPage() {
     if (!newMessage.trim() || !selected) return;
     setSending(true);
     try {
-      await api.post('/messages', {
+      await api.post("/messages", {
         content: newMessage,
         id_conversation: selected.id_conversation,
         id_sender: 6, // id_user du company
       });
-      setNewMessage('');
-      const res = await api.get(`/messages/conversation/${selected.id_conversation}`);
+      setNewMessage("");
+      const res = await api.get(
+        `/messages/conversation/${selected.id_conversation}`,
+      );
       setMessages(res.data);
     } catch {
-      console.error('Erreur send message');
+      console.error("Erreur send message");
     } finally {
       setSending(false);
     }
@@ -81,7 +85,10 @@ export default function CompanyMessagesPage() {
         <p className="text-sm text-gray-500">Échangez avec les étudiants.</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 bg-white border border-gray-100 rounded-xl overflow-hidden" style={{ height: '600px' }}>
+      <div
+        className="grid grid-cols-3 gap-4 bg-white border border-gray-100 rounded-xl overflow-hidden"
+        style={{ height: "600px" }}
+      >
         {/* Conversations list */}
         <div className="border-r border-gray-100 overflow-y-auto">
           {loading ? (
@@ -97,22 +104,29 @@ export default function CompanyMessagesPage() {
                 key={conv.id_conversation}
                 onClick={() => openConversation(conv)}
                 className={`p-4 border-b border-gray-50 cursor-pointer hover:bg-gray-50 transition ${
-                  selected?.id_conversation === conv.id_conversation ? 'bg-indigo-50' : ''
+                  selected?.id_conversation === conv.id_conversation
+                    ? "bg-indigo-50"
+                    : ""
                 }`}
               >
                 <div className="flex items-center gap-3 mb-1">
                   <div className="w-9 h-9 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-xs flex-shrink-0">
-                    {conv.student.user.prenom.charAt(0)}{conv.student.user.nom.charAt(0)}
+                    {conv.student.user.prenom.charAt(0)}
+                    {conv.student.user.nom.charAt(0)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="text-sm font-medium text-gray-800 truncate">
                       {conv.student.user.prenom} {conv.student.user.nom}
                     </h4>
-                    <p className="text-xs text-gray-400 truncate">{conv.offer.title}</p>
+                    <p className="text-xs text-gray-400 truncate">
+                      {conv.offer.title}
+                    </p>
                   </div>
                 </div>
                 {conv.messages[0] && (
-                  <p className="text-xs text-gray-400 truncate ml-12">{conv.messages[0].content}</p>
+                  <p className="text-xs text-gray-400 truncate ml-12">
+                    {conv.messages[0].content}
+                  </p>
                 )}
               </div>
             ))
@@ -130,13 +144,16 @@ export default function CompanyMessagesPage() {
               {/* Header */}
               <div className="border-b border-gray-100 p-4 flex items-center gap-3">
                 <div className="w-9 h-9 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-xs">
-                  {selected.student.user.prenom.charAt(0)}{selected.student.user.nom.charAt(0)}
+                  {selected.student.user.prenom.charAt(0)}
+                  {selected.student.user.nom.charAt(0)}
                 </div>
                 <div>
                   <h4 className="text-sm font-medium text-gray-800">
                     {selected.student.user.prenom} {selected.student.user.nom}
                   </h4>
-                  <p className="text-xs text-gray-400">{selected.offer.title}</p>
+                  <p className="text-xs text-gray-400">
+                    {selected.offer.title}
+                  </p>
                 </div>
               </div>
 
@@ -145,15 +162,25 @@ export default function CompanyMessagesPage() {
                 {messages.map((msg) => {
                   const isMe = msg.sender.id_user === 6; // id_user du company
                   return (
-                    <div key={msg.id_message} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
+                    <div
+                      key={msg.id_message}
+                      className={`flex ${isMe ? "justify-end" : "justify-start"}`}
+                    >
                       <div
                         className={`max-w-xs px-4 py-2 rounded-xl text-sm ${
-                          isMe ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'
+                          isMe
+                            ? "bg-indigo-600 text-white"
+                            : "bg-gray-100 text-gray-700"
                         }`}
                       >
                         {msg.content}
-                        <div className={`text-xs mt-1 ${isMe ? 'text-indigo-200' : 'text-gray-400'}`}>
-                          {new Date(msg.sent_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                        <div
+                          className={`text-xs mt-1 ${isMe ? "text-indigo-200" : "text-gray-400"}`}
+                        >
+                          {new Date(msg.sent_at).toLocaleTimeString("fr-FR", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
                         </div>
                       </div>
                     </div>
@@ -167,7 +194,7 @@ export default function CompanyMessagesPage() {
                   type="text"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
                   placeholder="Écrire un message..."
                   className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300"
                 />

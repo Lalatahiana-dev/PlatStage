@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import api from '@/lib/axios';
+import { useEffect, useState } from "react";
+import api from "@/lib/axios";
 
 interface Skill {
   id_skill: number;
@@ -13,16 +13,16 @@ export default function AdminSkillsPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Skill | null>(null);
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     const loadSkills = async () => {
       try {
-        const res = await api.get('/skills');
+        const res = await api.get("/skills");
         setSkills(res.data);
       } catch {
-        console.error('Erreur fetch skills');
+        console.error("Erreur fetch skills");
       } finally {
         setLoading(false);
       }
@@ -37,25 +37,25 @@ export default function AdminSkillsPage() {
       if (editing) {
         await api.put(`/skills/${editing.id_skill}`, { name });
       } else {
-        await api.post('/skills', { name });
+        await api.post("/skills", { name });
       }
       setShowForm(false);
-      const res = await api.get('/skills');
+      const res = await api.get("/skills");
       setSkills(res.data);
     } catch {
-      console.error('Erreur save skill');
+      console.error("Erreur save skill");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id_skill: number) => {
-    if (!confirm('Supprimer cette compétence ?')) return;
+    if (!confirm("Supprimer cette compétence ?")) return;
     try {
       await api.delete(`/skills/${id_skill}`);
       setSkills((prev) => prev.filter((s) => s.id_skill !== id_skill));
     } catch {
-      console.error('Erreur delete skill');
+      console.error("Erreur delete skill");
     }
   };
 
@@ -63,11 +63,19 @@ export default function AdminSkillsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-1">Compétences</h1>
-          <p className="text-sm text-gray-500">Gérez les compétences des étudiants.</p>
+          <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+            Compétences
+          </h1>
+          <p className="text-sm text-gray-500">
+            Gérez les compétences des étudiants.
+          </p>
         </div>
         <button
-          onClick={() => { setEditing(null); setName(''); setShowForm(true); }}
+          onClick={() => {
+            setEditing(null);
+            setName("");
+            setShowForm(true);
+          }}
           className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition"
         >
           <i className="ti ti-plus"></i>
@@ -80,15 +88,20 @@ export default function AdminSkillsPage() {
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-800">
-                {editing ? 'Modifier' : 'Nouvelle compétence'}
+                {editing ? "Modifier" : "Nouvelle compétence"}
               </h2>
-              <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600">
+              <button
+                onClick={() => setShowForm(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
                 <i className="ti ti-x text-lg"></i>
               </button>
             </div>
             <form onSubmit={handleSave} className="flex flex-col gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Nom *</label>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Nom *
+                </label>
                 <input
                   type="text"
                   value={name}
@@ -110,7 +123,7 @@ export default function AdminSkillsPage() {
                   disabled={saving}
                   className="flex-1 px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 disabled:opacity-50"
                 >
-                  {saving ? 'Enregistrement...' : 'Enregistrer'}
+                  {saving ? "Enregistrement..." : "Enregistrer"}
                 </button>
               </div>
             </form>
@@ -123,14 +136,23 @@ export default function AdminSkillsPage() {
       ) : (
         <div className="flex flex-wrap gap-3">
           {skills.map((skill) => (
-            <div key={skill.id_skill} className="bg-white border border-gray-100 rounded-xl px-4 py-3 flex items-center gap-3 hover:shadow-sm transition">
+            <div
+              key={skill.id_skill}
+              className="bg-white border border-gray-100 rounded-xl px-4 py-3 flex items-center gap-3 hover:shadow-sm transition"
+            >
               <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
                 <i className="ti ti-star text-indigo-600 text-sm"></i>
               </div>
-              <span className="text-sm font-medium text-gray-800">{skill.name}</span>
+              <span className="text-sm font-medium text-gray-800">
+                {skill.name}
+              </span>
               <div className="flex gap-1">
                 <button
-                  onClick={() => { setEditing(skill); setName(skill.name); setShowForm(true); }}
+                  onClick={() => {
+                    setEditing(skill);
+                    setName(skill.name);
+                    setShowForm(true);
+                  }}
                   className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
                 >
                   <i className="ti ti-edit text-xs"></i>

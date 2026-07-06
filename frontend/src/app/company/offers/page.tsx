@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useCallback } from 'react';
-import api from '@/lib/axios';
+import { useEffect, useState } from "react";
+import api from "@/lib/axios";
 
 interface Offer {
   id_offer: number;
@@ -11,15 +11,15 @@ interface Offer {
   location?: string;
   salary?: number;
   deadline?: string;
-  status: 'DRAFT' | 'PUBLISHED' | 'CLOSED';
+  status: "DRAFT" | "PUBLISHED" | "CLOSED";
   company: { company_name: string };
   categories: { category: { id_category: number; name: string } }[];
 }
 
 const statusConfig = {
-  DRAFT: { label: 'Brouillon', color: 'bg-gray-100 text-gray-600' },
-  PUBLISHED: { label: 'Publiée', color: 'bg-green-50 text-green-600' },
-  CLOSED: { label: 'Fermée', color: 'bg-red-50 text-red-500' },
+  DRAFT: { label: "Brouillon", color: "bg-gray-100 text-gray-600" },
+  PUBLISHED: { label: "Publiée", color: "bg-green-50 text-green-600" },
+  CLOSED: { label: "Fermée", color: "bg-red-50 text-red-500" },
 };
 
 export default function CompanyOffersPage() {
@@ -29,48 +29,50 @@ export default function CompanyOffersPage() {
   const [editing, setEditing] = useState<Offer | null>(null);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
-    title: '',
-    description: '',
-    requirements: '',
-    location: '',
-    salary: '',
-    deadline: '',
-    status: 'DRAFT',
+    title: "",
+    description: "",
+    requirements: "",
+    location: "",
+    salary: "",
+    deadline: "",
+    status: "DRAFT",
   });
-
-  const fetchOffers = useCallback(async () => {
-    try {
-      const res = await api.get('/offers');
-      const myOffers = res.data.filter(
-        (o: Offer) => o.company.company_name === 'Tech Madagascar'
-      );
-      setOffers(myOffers);
-    } catch {
-      console.error('Erreur fetch offers');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
-  const loadOffers = async () => {
+    const loadOffers = async () => {
+      try {
+        const res = await api.get("/offers/company/2");
+        setOffers(res.data);
+      } catch {
+        console.error("Erreur fetch offers");
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadOffers();
+  }, []);
+  // ✅ Fetch iray ihany
+  const fetchOffers = async () => {
     try {
-      const res = await api.get('/offers');
-      const myOffers = res.data.filter(
-        (o: Offer) => o.company.company_name === 'Tech Madagascar'
-      );
-      setOffers(myOffers);
+      const res = await api.get("/offers/company/2");
+      setOffers(res.data);
     } catch {
-      console.error('Erreur fetch offers');
+      console.error("Erreur fetch offers");
     } finally {
       setLoading(false);
     }
   };
-  loadOffers();
-}, []);
+
   const openCreate = () => {
     setEditing(null);
-    setForm({ title: '', description: '', requirements: '', location: '', salary: '', deadline: '', status: 'DRAFT' });
+    setForm({
+      title: "",
+      description: "",
+      requirements: "",
+      location: "",
+      salary: "",
+      deadline: "",
+      status: "DRAFT",
+    });
     setShowForm(true);
   };
 
@@ -79,68 +81,70 @@ export default function CompanyOffersPage() {
     setForm({
       title: offer.title,
       description: offer.description,
-      requirements: offer.requirements ?? '',
-      location: offer.location ?? '',
-      salary: offer.salary?.toString() ?? '',
-      deadline: offer.deadline ? offer.deadline.split('T')[0] : '',
+      requirements: offer.requirements ?? "",
+      location: offer.location ?? "",
+      salary: offer.salary?.toString() ?? "",
+      deadline: offer.deadline ? offer.deadline.split("T")[0] : "",
       status: offer.status,
     });
     setShowForm(true);
   };
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSaving(true);
     try {
       if (editing) {
-        const updateData = {
+        await api.put(`/offers/${editing.id_offer}`, {
           title: form.title,
           description: form.description,
           requirements: form.requirements || undefined,
           location: form.location || undefined,
           salary: form.salary ? Number(form.salary) : undefined,
-          deadline: form.deadline ? new Date(form.deadline).toISOString() : undefined,
-          status: form.status as 'DRAFT' | 'PUBLISHED' | 'CLOSED',
-        };
-        await api.put(`/offers/${editing.id_offer}`, updateData);
+          deadline: form.deadline
+            ? new Date(form.deadline).toISOString()
+            : undefined,
+          status: form.status as "DRAFT" | "PUBLISHED" | "CLOSED",
+        });
       } else {
-        const createData = {
+        await api.post("/offers", {
           title: form.title,
           description: form.description,
           requirements: form.requirements || undefined,
           location: form.location || undefined,
           salary: form.salary ? Number(form.salary) : undefined,
-          deadline: form.deadline ? new Date(form.deadline).toISOString() : undefined,
-          status: form.status as 'DRAFT' | 'PUBLISHED' | 'CLOSED',
+          deadline: form.deadline
+            ? new Date(form.deadline).toISOString()
+            : undefined,
+          status: form.status as "DRAFT" | "PUBLISHED" | "CLOSED",
           id_company: 2,
-        };
-        await api.post('/offers', createData);
+        });
       }
       setShowForm(false);
-      fetchOffers();
+      await fetchOffers();
     } catch (err) {
-      console.error('Erreur save offer:', err);
+      console.error("Erreur save offer:", err);
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id_offer: number) => {
-    if (!confirm('Supprimer cette offre ?')) return;
+    if (!confirm("Supprimer cette offre ?")) return;
     try {
       await api.delete(`/offers/${id_offer}`);
-      fetchOffers();
+      await fetchOffers();
     } catch {
-      console.error('Erreur delete offer');
+      console.error("Erreur delete offer");
     }
   };
 
   const handleStatusChange = async (id_offer: number, status: string) => {
     try {
       await api.put(`/offers/${id_offer}`, { status });
-      fetchOffers();
+      await fetchOffers();
     } catch {
-      console.error('Erreur status change');
+      console.error("Erreur status change");
     }
   };
 
@@ -148,7 +152,9 @@ export default function CompanyOffersPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-1">Mes offres</h1>
+          <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+            Mes offres
+          </h1>
           <p className="text-sm text-gray-500">Gérez vos offres de stage.</p>
         </div>
         <button
@@ -165,16 +171,21 @@ export default function CompanyOffersPage() {
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-screen overflow-y-auto p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-800">
-                {editing ? "Modifier l'offre" : 'Nouvelle offre'}
+                {editing ? "Modifier l'offre" : "Nouvelle offre"}
               </h2>
-              <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600">
+              <button
+                onClick={() => setShowForm(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
                 <i className="ti ti-x text-lg"></i>
               </button>
             </div>
 
             <form onSubmit={handleSave} className="flex flex-col gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Titre *</label>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Titre *
+                </label>
                 <input
                   type="text"
                   value={form.title}
@@ -185,10 +196,14 @@ export default function CompanyOffersPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Description *</label>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Description *
+                </label>
                 <textarea
                   value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, description: e.target.value })
+                  }
                   className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300"
                   rows={3}
                   required
@@ -196,31 +211,43 @@ export default function CompanyOffersPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Prérequis</label>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Prérequis
+                </label>
                 <input
                   type="text"
                   value={form.requirements}
-                  onChange={(e) => setForm({ ...form, requirements: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, requirements: e.target.value })
+                  }
                   className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Lieu</label>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">
+                    Lieu
+                  </label>
                   <input
                     type="text"
                     value={form.location}
-                    onChange={(e) => setForm({ ...form, location: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, location: e.target.value })
+                    }
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Salaire (Ar)</label>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">
+                    Salaire (Ar)
+                  </label>
                   <input
                     type="number"
                     value={form.salary}
-                    onChange={(e) => setForm({ ...form, salary: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, salary: e.target.value })
+                    }
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300"
                   />
                 </div>
@@ -228,19 +255,27 @@ export default function CompanyOffersPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Date limite</label>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">
+                    Date limite
+                  </label>
                   <input
                     type="date"
                     value={form.deadline}
-                    onChange={(e) => setForm({ ...form, deadline: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, deadline: e.target.value })
+                    }
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Statut</label>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">
+                    Statut
+                  </label>
                   <select
                     value={form.status}
-                    onChange={(e) => setForm({ ...form, status: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, status: e.target.value })
+                    }
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300"
                   >
                     <option value="DRAFT">Brouillon</option>
@@ -263,7 +298,7 @@ export default function CompanyOffersPage() {
                   disabled={saving}
                   className="flex-1 px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
                 >
-                  {saving ? 'Enregistrement...' : 'Enregistrer'}
+                  {saving ? "Enregistrement..." : "Enregistrer"}
                 </button>
               </div>
             </form>
@@ -283,16 +318,25 @@ export default function CompanyOffersPage() {
           {offers.map((offer) => {
             const status = statusConfig[offer.status];
             return (
-              <div key={offer.id_offer} className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition">
+              <div
+                key={offer.id_offer}
+                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition"
+              >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-base font-semibold text-gray-800">{offer.title}</h3>
-                      <span className={`text-xs px-2 py-1 rounded-lg ${status.color}`}>
+                      <h3 className="text-base font-semibold text-gray-800">
+                        {offer.title}
+                      </h3>
+                      <span
+                        className={`text-xs px-2 py-1 rounded-lg ${status.color}`}
+                      >
                         {status.label}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-500 mb-3 line-clamp-2">{offer.description}</p>
+                    <p className="text-sm text-gray-500 mb-3 line-clamp-2">
+                      {offer.description}
+                    </p>
                     <div className="flex flex-wrap gap-2">
                       {offer.location && (
                         <span className="flex items-center gap-1 text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-lg">
@@ -309,24 +353,28 @@ export default function CompanyOffersPage() {
                       {offer.deadline && (
                         <span className="flex items-center gap-1 text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-lg">
                           <i className="ti ti-calendar text-xs"></i>
-                          {new Date(offer.deadline).toLocaleDateString('fr-FR')}
+                          {new Date(offer.deadline).toLocaleDateString("fr-FR")}
                         </span>
                       )}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 ml-4 flex-shrink-0">
-                    {offer.status === 'DRAFT' && (
+                    {offer.status === "DRAFT" && (
                       <button
-                        onClick={() => handleStatusChange(offer.id_offer, 'PUBLISHED')}
+                        onClick={() =>
+                          handleStatusChange(offer.id_offer, "PUBLISHED")
+                        }
                         className="px-3 py-1.5 bg-green-50 text-green-600 text-xs rounded-lg hover:bg-green-100 transition"
                       >
                         Publier
                       </button>
                     )}
-                    {offer.status === 'PUBLISHED' && (
+                    {offer.status === "PUBLISHED" && (
                       <button
-                        onClick={() => handleStatusChange(offer.id_offer, 'CLOSED')}
+                        onClick={() =>
+                          handleStatusChange(offer.id_offer, "CLOSED")
+                        }
                         className="px-3 py-1.5 bg-yellow-50 text-yellow-600 text-xs rounded-lg hover:bg-yellow-100 transition"
                       >
                         Fermer

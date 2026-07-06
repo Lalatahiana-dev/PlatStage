@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { ApplicationStatus } from '@prisma/client';
+import { ApplicationStatus, NotificationType } from '@prisma/client';
 
 @Injectable()
 export class ApplicationService {
@@ -110,7 +110,6 @@ export class ApplicationService {
     });
   }
 
-  // ✅ MANAMPY ITY
   async findByOffer(id_offer: number) {
     return this.prisma.application.findMany({
       where: { id_offer },
@@ -142,16 +141,83 @@ export class ApplicationService {
     id_student: number;
     id_offer: number;
   }) {
-    return this.prisma.application.create({
-      data,
+    // ✅ Mamorona application
+    const application = await this.prisma.application.create({ data });
+
+    // ✅ Hahazo ny offer miaraka amin'ny company sy student
+    const offer = await this.prisma.offer.findUnique({
+      where: { id_offer: data.id_offer },
+      include: { company: { include: { user: true } } },
     });
+
+    const student = await this.prisma.studentProfile.findUnique({
+      where: { id_student: data.id_student },
+      include: { user: true },
+    });
+
+    // ✅ Mamorona notification ho an'ny COMPANY
+    if (offer && student) {
+      await this.prisma.notification.create({
+        data: {
+          title: 'Nouvelle candidature reçue ! 📩',
+          content: `${student.user.prenom} ${student.user.nom} a postulé pour "${offer.title}".`,
+          type: NotificationType.NEW_APPLICATION,
+          id_user: offer.company.user.id_user,
+        },
+      });
+    }
+
+    return application;
   }
 
   async updateStatus(id_application: number, status: ApplicationStatus) {
-    return this.prisma.application.update({
+    // ✅ Hahazo ny application miaraka amin'ny student sy offer
+    const application = await this.prisma.application.findUnique({
+      where: { id_application },
+      include: {
+        student: {
+          include: { user: true },
+        },
+        offer: {
+          include: { company: true },
+        },
+      },
+    });
+
+    if (!application) throw new NotFoundException('Application not found');
+
+    // ✅ Manova status
+    const updated = await this.prisma.application.update({
       where: { id_application },
       data: { status },
     });
+
+    // ✅ Mamorona notification ho an'ny student
+    const notifType =
+      status === ApplicationStatus.ACCEPTEE
+        ? NotificationType.ACCEPTED
+        : NotificationType.REFUSED;
+
+    const notifTitle =
+      status === ApplicationStatus.ACCEPTEE
+        ? 'Candidature acceptée ! 🎉'
+        : 'Candidature refusée';
+
+    const notifContent =
+      status === ApplicationStatus.ACCEPTEE
+        ? `Félicitations ! Votre candidature pour "${application.offer.title}" chez ${application.offer.company.company_name} a été acceptée.`
+        : `Votre candidature pour "${application.offer.title}" chez ${application.offer.company.company_name} a été refusée.`;
+
+    await this.prisma.notification.create({
+      data: {
+        title: notifTitle,
+        content: notifContent,
+        type: notifType,
+        id_user: application.student.id_user,
+      },
+    });
+
+    return updated;
   }
 
   async remove(id_application: number) {

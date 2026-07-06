@@ -25,7 +25,7 @@ export interface Offer {
   location?: string;
   salary?: number;
   deadline?: string;
-  status: 'DRAFT' | 'PUBLISHED' | 'CLOSED';
+  status: "DRAFT" | "PUBLISHED" | "CLOSED";
   company: {
     company_name: string;
     logo_url?: string;
@@ -37,7 +37,7 @@ export interface Offer {
 export interface Application {
   id_application: number;
   motivation?: string;
-  status: 'EN_ATTENTE' | 'ACCEPTEE' | 'REFUSEE';
+  status: "EN_ATTENTE" | "ACCEPTEE" | "REFUSEE";
   applied_at: string;
   offer: {
     id_offer: number;

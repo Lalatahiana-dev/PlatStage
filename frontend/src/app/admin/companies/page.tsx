@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import api from '@/lib/axios';
+import { useEffect, useState } from "react";
+import api from "@/lib/axios";
 
 interface Company {
   id_company: number;
@@ -23,15 +23,15 @@ interface Company {
 export default function AdminCompaniesPage() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const loadCompanies = async () => {
       try {
-        const res = await api.get('/companies');
+        const res = await api.get("/companies");
         setCompanies(res.data);
       } catch {
-        console.error('Erreur fetch companies');
+        console.error("Erreur fetch companies");
       } finally {
         setLoading(false);
       }
@@ -43,16 +43,16 @@ export default function AdminCompaniesPage() {
     (c) =>
       c.company_name.toLowerCase().includes(search.toLowerCase()) ||
       c.sector?.toLowerCase().includes(search.toLowerCase()) ||
-      c.user.email.toLowerCase().includes(search.toLowerCase())
+      c.user.email.toLowerCase().includes(search.toLowerCase()),
   );
 
   const handleDelete = async (id_company: number) => {
-    if (!confirm('Supprimer cette entreprise ?')) return;
+    if (!confirm("Supprimer cette entreprise ?")) return;
     try {
       await api.delete(`/companies/${id_company}`);
       setCompanies((prev) => prev.filter((c) => c.id_company !== id_company));
     } catch {
-      console.error('Erreur delete company');
+      console.error("Erreur delete company");
     }
   };
 
@@ -60,7 +60,9 @@ export default function AdminCompaniesPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-1">Entreprises</h1>
+          <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+            Entreprises
+          </h1>
           <p className="text-sm text-gray-500">Gérez toutes les entreprises.</p>
         </div>
         <div className="bg-purple-50 text-purple-600 px-4 py-2 rounded-xl text-sm font-medium">
@@ -85,7 +87,10 @@ export default function AdminCompaniesPage() {
       ) : (
         <div className="flex flex-col gap-4">
           {filtered.map((company) => (
-            <div key={company.id_company} className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition">
+            <div
+              key={company.id_company}
+              className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition"
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 font-bold text-lg flex-shrink-0">
@@ -93,7 +98,9 @@ export default function AdminCompaniesPage() {
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-semibold text-gray-800">{company.company_name}</h3>
+                      <h3 className="text-sm font-semibold text-gray-800">
+                        {company.company_name}
+                      </h3>
                       {company.is_verified && (
                         <span className="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-lg">
                           <i className="ti ti-circle-check mr-1"></i>Vérifié
@@ -103,7 +110,8 @@ export default function AdminCompaniesPage() {
                     <p className="text-xs text-gray-400">{company.sector}</p>
                     <p className="text-xs text-gray-400 mt-1">
                       <i className="ti ti-user mr-1"></i>
-                      {company.user.prenom} {company.user.nom} — {company.user.email}
+                      {company.user.prenom} {company.user.nom} —{" "}
+                      {company.user.email}
                     </p>
                   </div>
                 </div>
@@ -116,7 +124,7 @@ export default function AdminCompaniesPage() {
                     </span>
                   )}
                   <span className="text-xs text-gray-400">
-                    {new Date(company.created_at).toLocaleDateString('fr-FR')}
+                    {new Date(company.created_at).toLocaleDateString("fr-FR")}
                   </span>
                   <button
                     onClick={() => handleDelete(company.id_company)}

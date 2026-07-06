@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import api from '@/lib/axios';
+import { useEffect, useState } from "react";
+import api from "@/lib/axios";
 
 interface Category {
   id_category: number;
@@ -14,7 +14,7 @@ export default function AdminCategoriesPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Category | null>(null);
-  const [form, setForm] = useState({ name: '', description: '' });
+  const [form, setForm] = useState({ name: "", description: "" });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -23,10 +23,10 @@ export default function AdminCategoriesPage() {
 
   const loadCategories = async () => {
     try {
-      const res = await api.get('/categories');
+      const res = await api.get("/categories");
       setCategories(res.data);
     } catch {
-      console.error('Erreur fetch categories');
+      console.error("Erreur fetch categories");
     } finally {
       setLoading(false);
     }
@@ -34,13 +34,13 @@ export default function AdminCategoriesPage() {
 
   const openCreate = () => {
     setEditing(null);
-    setForm({ name: '', description: '' });
+    setForm({ name: "", description: "" });
     setShowForm(true);
   };
 
   const openEdit = (cat: Category) => {
     setEditing(cat);
-    setForm({ name: cat.name, description: cat.description ?? '' });
+    setForm({ name: cat.name, description: cat.description ?? "" });
     setShowForm(true);
   };
 
@@ -51,24 +51,26 @@ export default function AdminCategoriesPage() {
       if (editing) {
         await api.put(`/categories/${editing.id_category}`, form);
       } else {
-        await api.post('/categories', form);
+        await api.post("/categories", form);
       }
       setShowForm(false);
       loadCategories();
     } catch {
-      console.error('Erreur save category');
+      console.error("Erreur save category");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id_category: number) => {
-    if (!confirm('Supprimer cette catégorie ?')) return;
+    if (!confirm("Supprimer cette catégorie ?")) return;
     try {
       await api.delete(`/categories/${id_category}`);
-      setCategories((prev) => prev.filter((c) => c.id_category !== id_category));
+      setCategories((prev) =>
+        prev.filter((c) => c.id_category !== id_category),
+      );
     } catch {
-      console.error('Erreur delete category');
+      console.error("Erreur delete category");
     }
   };
 
@@ -76,8 +78,12 @@ export default function AdminCategoriesPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-1">Catégories</h1>
-          <p className="text-sm text-gray-500">Gérez les catégories des offres.</p>
+          <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+            Catégories
+          </h1>
+          <p className="text-sm text-gray-500">
+            Gérez les catégories des offres.
+          </p>
         </div>
         <button
           onClick={openCreate}
@@ -94,15 +100,20 @@ export default function AdminCategoriesPage() {
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-800">
-                {editing ? 'Modifier' : 'Nouvelle catégorie'}
+                {editing ? "Modifier" : "Nouvelle catégorie"}
               </h2>
-              <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600">
+              <button
+                onClick={() => setShowForm(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
                 <i className="ti ti-x text-lg"></i>
               </button>
             </div>
             <form onSubmit={handleSave} className="flex flex-col gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Nom *</label>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Nom *
+                </label>
                 <input
                   type="text"
                   value={form.name}
@@ -112,10 +123,14 @@ export default function AdminCategoriesPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Description
+                </label>
                 <textarea
                   value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, description: e.target.value })
+                  }
                   className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300"
                   rows={3}
                 />
@@ -133,7 +148,7 @@ export default function AdminCategoriesPage() {
                   disabled={saving}
                   className="flex-1 px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 disabled:opacity-50"
                 >
-                  {saving ? 'Enregistrement...' : 'Enregistrer'}
+                  {saving ? "Enregistrement..." : "Enregistrer"}
                 </button>
               </div>
             </form>
@@ -146,14 +161,21 @@ export default function AdminCategoriesPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {categories.map((cat) => (
-            <div key={cat.id_category} className="bg-white border border-gray-100 rounded-xl p-4 flex items-center justify-between hover:shadow-sm transition">
+            <div
+              key={cat.id_category}
+              className="bg-white border border-gray-100 rounded-xl p-4 flex items-center justify-between hover:shadow-sm transition"
+            >
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center">
                   <i className="ti ti-tag text-indigo-600"></i>
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-800">{cat.name}</h3>
-                  {cat.description && <p className="text-xs text-gray-400">{cat.description}</p>}
+                  <h3 className="text-sm font-semibold text-gray-800">
+                    {cat.name}
+                  </h3>
+                  {cat.description && (
+                    <p className="text-xs text-gray-400">{cat.description}</p>
+                  )}
                 </div>
               </div>
               <div className="flex gap-2">

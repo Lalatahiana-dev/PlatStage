@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -29,8 +29,8 @@ export default function Home() {
           <span className="text-indigo-600">idéal à Madagascar</span>
         </h2>
         <p className="text-xl text-gray-600 max-w-2xl mb-10">
-          PlatStage connecte les étudiants avec les meilleures entreprises
-          pour des opportunités de stage enrichissantes.
+          PlatStage connecte les étudiants avec les meilleures entreprises pour
+          des opportunités de stage enrichissantes.
         </p>
         <div className="flex gap-4">
           <Link

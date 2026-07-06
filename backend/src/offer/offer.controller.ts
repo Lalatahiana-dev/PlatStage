@@ -69,6 +69,15 @@ export class OfferController {
     return this.offerService.create(body);
   }
 
+  @Get('company/:id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Mahita offers an'ny company" })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('COMPANY', 'ADMIN')
+  async findByCompany(@Param('id', ParseIntPipe) id: number) {
+    return this.offerService.findByCompany(id);
+  }
+
   @Put(':id')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Manova offer (ADMIN/COMPANY)' })

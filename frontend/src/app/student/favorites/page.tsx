@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import api from '@/lib/axios';
+import { useEffect, useState } from "react";
+import api from "@/lib/axios";
 
 interface Favorite {
   id_favorite: number;
@@ -29,10 +29,10 @@ export default function StudentFavoritesPage() {
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const res = await api.get('/favorites/student/2');
+        const res = await api.get("/favorites/student/2");
         setFavorites(res.data);
       } catch {
-        console.error('Erreur fetch favorites');
+        console.error("Erreur fetch favorites");
       } finally {
         setLoading(false);
       }
@@ -46,7 +46,7 @@ export default function StudentFavoritesPage() {
       await api.delete(`/favorites/${id_favorite}`);
       setFavorites((prev) => prev.filter((f) => f.id_favorite !== id_favorite));
     } catch {
-      console.error('Erreur remove favorite');
+      console.error("Erreur remove favorite");
     } finally {
       setRemoving(null);
     }
@@ -56,8 +56,12 @@ export default function StudentFavoritesPage() {
     <div>
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-1">Mes favoris</h1>
-        <p className="text-sm text-gray-500">Retrouvez les offres que vous avez sauvegardées.</p>
+        <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+          Mes favoris
+        </h1>
+        <p className="text-sm text-gray-500">
+          Retrouvez les offres que vous avez sauvegardées.
+        </p>
       </div>
 
       {/* List */}
@@ -81,8 +85,12 @@ export default function StudentFavoritesPage() {
                     {fav.offer.company.company_name.charAt(0)}
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-800">{fav.offer.title}</h3>
-                    <p className="text-xs text-gray-400">{fav.offer.company.company_name}</p>
+                    <h3 className="text-sm font-semibold text-gray-800">
+                      {fav.offer.title}
+                    </h3>
+                    <p className="text-xs text-gray-400">
+                      {fav.offer.company.company_name}
+                    </p>
                   </div>
                 </div>
                 <button
@@ -110,12 +118,14 @@ export default function StudentFavoritesPage() {
                 )}
                 <span
                   className={`flex items-center gap-1 text-xs px-2 py-1 rounded-lg ${
-                    fav.offer.status === 'PUBLISHED'
-                      ? 'bg-green-50 text-green-600'
-                      : 'bg-gray-50 text-gray-500'
+                    fav.offer.status === "PUBLISHED"
+                      ? "bg-green-50 text-green-600"
+                      : "bg-gray-50 text-gray-500"
                   }`}
                 >
-                  {fav.offer.status === 'PUBLISHED' ? 'Publiée' : fav.offer.status}
+                  {fav.offer.status === "PUBLISHED"
+                    ? "Publiée"
+                    : fav.offer.status}
                 </span>
               </div>
             </div>

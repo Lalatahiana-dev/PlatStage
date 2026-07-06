@@ -26,7 +26,38 @@ export class StudentService {
       },
     });
   }
-
+  async findByUser(id_user: number) {
+    return this.prisma.studentProfile.findUnique({
+      where: { id_user },
+      select: {
+        id_student: true,
+        phone: true,
+        university: true,
+        level: true,
+        cv_url: true,
+        address: true,
+        photo_url: true,
+        user: {
+          select: {
+            id_user: true,
+            nom: true,
+            prenom: true,
+            email: true,
+          },
+        },
+        skills: {
+          select: {
+            skill: {
+              select: {
+                id_skill: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
   async findOne(id_student: number) {
     const student = await this.prisma.studentProfile.findUnique({
       where: { id_student },

@@ -51,7 +51,39 @@ export class OfferService {
       },
     });
   }
-
+  async findByCompany(id_company: number) {
+    return this.prisma.offer.findMany({
+      where: { id_company },
+      select: {
+        id_offer: true,
+        title: true,
+        description: true,
+        requirements: true,
+        location: true,
+        salary: true,
+        deadline: true,
+        status: true,
+        created_at: true,
+        updated_at: true,
+        company: {
+          select: {
+            company_name: true,
+            sector: true,
+          },
+        },
+        categories: {
+          select: {
+            category: {
+              select: {
+                id_category: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
   async findOne(id_offer: number) {
     const offer = await this.prisma.offer.findUnique({
       where: { id_offer },

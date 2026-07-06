@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import api from '@/lib/axios';
+import { useEffect, useState } from "react";
+import api from "@/lib/axios";
 
 interface Application {
   id_application: number;
   motivation?: string;
-  status: 'EN_ATTENTE' | 'ACCEPTEE' | 'REFUSEE';
+  status: "EN_ATTENTE" | "ACCEPTEE" | "REFUSEE";
   applied_at: string;
   student: {
     id_student: number;
@@ -28,25 +28,27 @@ interface Application {
 }
 
 const statusConfig = {
-  EN_ATTENTE: { label: 'En attente', color: 'bg-yellow-50 text-yellow-600' },
-  ACCEPTEE: { label: 'Acceptée', color: 'bg-green-50 text-green-600' },
-  REFUSEE: { label: 'Refusée', color: 'bg-red-50 text-red-500' },
+  EN_ATTENTE: { label: "En attente", color: "bg-yellow-50 text-yellow-600" },
+  ACCEPTEE: { label: "Acceptée", color: "bg-green-50 text-green-600" },
+  REFUSEE: { label: "Refusée", color: "bg-red-50 text-red-500" },
 };
 
 export default function AdminApplicationsPage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState<'ALL' | 'EN_ATTENTE' | 'ACCEPTEE' | 'REFUSEE'>('ALL');
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<
+    "ALL" | "EN_ATTENTE" | "ACCEPTEE" | "REFUSEE"
+  >("ALL");
   const [updating, setUpdating] = useState<number | null>(null);
 
   useEffect(() => {
     const loadApplications = async () => {
       try {
-        const res = await api.get('/applications');
+        const res = await api.get("/applications");
         setApplications(res.data);
       } catch {
-        console.error('Erreur fetch applications');
+        console.error("Erreur fetch applications");
       } finally {
         setLoading(false);
       }
@@ -61,12 +63,12 @@ export default function AdminApplicationsPage() {
       setApplications((prev) =>
         prev.map((a) =>
           a.id_application === id_application
-            ? { ...a, status: status as Application['status'] }
-            : a
-        )
+            ? { ...a, status: status as Application["status"] }
+            : a,
+        ),
       );
     } catch {
-      console.error('Erreur update status');
+      console.error("Erreur update status");
     } finally {
       setUpdating(null);
     }
@@ -78,7 +80,7 @@ export default function AdminApplicationsPage() {
       a.student.user.email.toLowerCase().includes(search.toLowerCase()) ||
       a.offer.title.toLowerCase().includes(search.toLowerCase()) ||
       a.offer.company.company_name.toLowerCase().includes(search.toLowerCase());
-    const matchFilter = filter === 'ALL' || a.status === filter;
+    const matchFilter = filter === "ALL" || a.status === filter;
     return matchSearch && matchFilter;
   });
 
@@ -86,8 +88,12 @@ export default function AdminApplicationsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-1">Candidatures</h1>
-          <p className="text-sm text-gray-500">Gérez toutes les candidatures.</p>
+          <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+            Candidatures
+          </h1>
+          <p className="text-sm text-gray-500">
+            Gérez toutes les candidatures.
+          </p>
         </div>
         <div className="bg-yellow-50 text-yellow-600 px-4 py-2 rounded-xl text-sm font-medium">
           {applications.length} candidatures
@@ -107,17 +113,17 @@ export default function AdminApplicationsPage() {
           />
         </div>
         <div className="flex gap-2">
-          {(['ALL', 'EN_ATTENTE', 'ACCEPTEE', 'REFUSEE'] as const).map((f) => (
+          {(["ALL", "EN_ATTENTE", "ACCEPTEE", "REFUSEE"] as const).map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
               className={`px-3 py-2 text-xs rounded-lg transition ${
                 filter === f
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                  ? "bg-indigo-600 text-white"
+                  : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
               }`}
             >
-              {f === 'ALL' ? 'Tous' : statusConfig[f].label}
+              {f === "ALL" ? "Tous" : statusConfig[f].label}
             </button>
           ))}
         </div>
@@ -126,16 +132,38 @@ export default function AdminApplicationsPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         {[
-          { label: 'En attente', value: applications.filter(a => a.status === 'EN_ATTENTE').length, color: 'yellow', icon: 'ti-clock' },
-          { label: 'Acceptées', value: applications.filter(a => a.status === 'ACCEPTEE').length, color: 'green', icon: 'ti-circle-check' },
-          { label: 'Refusées', value: applications.filter(a => a.status === 'REFUSEE').length, color: 'red', icon: 'ti-circle-x' },
+          {
+            label: "En attente",
+            value: applications.filter((a) => a.status === "EN_ATTENTE").length,
+            color: "yellow",
+            icon: "ti-clock",
+          },
+          {
+            label: "Acceptées",
+            value: applications.filter((a) => a.status === "ACCEPTEE").length,
+            color: "green",
+            icon: "ti-circle-check",
+          },
+          {
+            label: "Refusées",
+            value: applications.filter((a) => a.status === "REFUSEE").length,
+            color: "red",
+            icon: "ti-circle-x",
+          },
         ].map((s) => (
-          <div key={s.label} className="bg-white border border-gray-100 rounded-xl p-4 flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center bg-${s.color}-50 text-${s.color}-600`}>
+          <div
+            key={s.label}
+            className="bg-white border border-gray-100 rounded-xl p-4 flex items-center gap-3"
+          >
+            <div
+              className={`w-10 h-10 rounded-lg flex items-center justify-center bg-${s.color}-50 text-${s.color}-600`}
+            >
               <i className={`ti ${s.icon} text-lg`}></i>
             </div>
             <div>
-              <div className="text-2xl font-semibold text-gray-800">{s.value}</div>
+              <div className="text-2xl font-semibold text-gray-800">
+                {s.value}
+              </div>
               <div className="text-xs text-gray-400">{s.label}</div>
             </div>
           </div>
@@ -154,17 +182,23 @@ export default function AdminApplicationsPage() {
           {filtered.map((app) => {
             const status = statusConfig[app.status];
             return (
-              <div key={app.id_application} className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition">
+              <div
+                key={app.id_application}
+                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition"
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-bold text-sm flex-shrink-0">
-                      {app.student.user.prenom.charAt(0)}{app.student.user.nom.charAt(0)}
+                      {app.student.user.prenom.charAt(0)}
+                      {app.student.user.nom.charAt(0)}
                     </div>
                     <div>
                       <h3 className="text-sm font-semibold text-gray-800">
                         {app.student.user.prenom} {app.student.user.nom}
                       </h3>
-                      <p className="text-xs text-gray-400">{app.student.user.email}</p>
+                      <p className="text-xs text-gray-400">
+                        {app.student.user.email}
+                      </p>
                       <p className="text-xs text-indigo-500 mt-1">
                         <i className="ti ti-briefcase mr-1"></i>
                         {app.offer.title} — {app.offer.company.company_name}
@@ -174,22 +208,28 @@ export default function AdminApplicationsPage() {
 
                   <div className="flex items-center gap-3">
                     <div className="text-xs text-gray-400">
-                      {new Date(app.applied_at).toLocaleDateString('fr-FR')}
+                      {new Date(app.applied_at).toLocaleDateString("fr-FR")}
                     </div>
-                    <span className={`text-xs px-3 py-1 rounded-lg font-medium ${status.color}`}>
+                    <span
+                      className={`text-xs px-3 py-1 rounded-lg font-medium ${status.color}`}
+                    >
                       {status.label}
                     </span>
-                    {app.status === 'EN_ATTENTE' && (
+                    {app.status === "EN_ATTENTE" && (
                       <div className="flex gap-2">
                         <button
-                          onClick={() => handleStatusChange(app.id_application, 'ACCEPTEE')}
+                          onClick={() =>
+                            handleStatusChange(app.id_application, "ACCEPTEE")
+                          }
                           disabled={updating === app.id_application}
                           className="px-3 py-1.5 bg-green-50 text-green-600 text-xs rounded-lg hover:bg-green-100 transition disabled:opacity-50"
                         >
                           Accepter
                         </button>
                         <button
-                          onClick={() => handleStatusChange(app.id_application, 'REFUSEE')}
+                          onClick={() =>
+                            handleStatusChange(app.id_application, "REFUSEE")
+                          }
                           disabled={updating === app.id_application}
                           className="px-3 py-1.5 bg-red-50 text-red-500 text-xs rounded-lg hover:bg-red-100 transition disabled:opacity-50"
                         >
@@ -202,7 +242,9 @@ export default function AdminApplicationsPage() {
 
                 {app.motivation && (
                   <div className="mt-3 ml-14 bg-gray-50 rounded-lg p-3">
-                    <p className="text-xs text-gray-500 italic">&quot;{app.motivation}&quot;</p>
+                    <p className="text-xs text-gray-500 italic">
+                      &quot;{app.motivation}&quot;
+                    </p>
                   </div>
                 )}
               </div>

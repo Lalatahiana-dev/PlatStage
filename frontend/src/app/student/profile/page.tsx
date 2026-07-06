@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import api from '@/lib/axios';
+import { useEffect, useState } from "react";
+import api from "@/lib/axios";
+import { useAuthStore } from "@/store/auth.store";
 
 interface StudentProfile {
   id_student: number;
@@ -26,85 +27,118 @@ interface Skill {
 }
 
 export default function StudentProfilePage() {
+  const { user } = useAuthStore();
   const [profile, setProfile] = useState<StudentProfile | null>(null);
   const [allSkills, setAllSkills] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [idStudent, setIdStudent] = useState<number | null>(null);
   const [form, setForm] = useState({
-    phone: '',
-    university: '',
-    level: '',
-    address: '',
+    phone: "",
+    university: "",
+    level: "",
+    address: "",
   });
-  const [selectedSkill, setSelectedSkill] = useState('');
+  const [selectedSkill, setSelectedSkill] = useState("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [profileRes, skillsRes] = await Promise.all([
-          api.get('/students/2'), // id_student
-          api.get('/skills'),
-        ]);
-        setProfile(profileRes.data);
-        setForm({
-          phone: profileRes.data.phone ?? '',
-          university: profileRes.data.university ?? '',
-          level: profileRes.data.level ?? '',
-          address: profileRes.data.address ?? '',
-        });
-        setAllSkills(skillsRes.data);
-      } catch {
-        console.error('Erreur fetch profile');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  if (!user) return;
+
+  const fetchData = async () => {
+    try {
+      // ✅ Hahazo ny student profile avy amin'ny id_user mivantana
+      // Manampy endpoint vaovao ao amin'ny backend
+      const [profileRes, skillsRes] = await Promise.all([
+        api.get(`/students/user/${user.userId}`),
+        api.get("/skills"),
+      ]);
+      setProfile(profileRes.data);
+      setIdStudent(profileRes.data.id_student);
+      setForm({
+        phone: profileRes.data.phone ?? "",
+        university: profileRes.data.university ?? "",
+        level: profileRes.data.level ?? "",
+        address: profileRes.data.address ?? "",
+      });
+      setAllSkills(skillsRes.data);
+    } catch {
+      console.error("Erreur fetch profile");
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchData();
+}, [user]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!idStudent) return;
     setSaving(true);
     setSuccess(false);
     try {
-      await api.put('/students/2', form);
+      await api.put(`/students/${idStudent}`, form);
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch {
-      console.error('Erreur update profile');
+      console.error("Erreur update profile");
     } finally {
       setSaving(false);
     }
   };
 
   const handleAddSkill = async () => {
-    if (!selectedSkill) return;
+    if (!selectedSkill || !idStudent) return;
     try {
-      await api.post('/students/2/skills', { id_skill: Number(selectedSkill) });
-      const res = await api.get('/students/2');
+      await api.post(`/students/${idStudent}/skills`, { id_skill: Number(selectedSkill) });
+      const res = await api.get(`/students/${idStudent}`);
       setProfile(res.data);
-      setSelectedSkill('');
+      setSelectedSkill("");
     } catch {
-      console.error('Erreur add skill');
+      console.error("Erreur add skill");
     }
   };
 
   const handleRemoveSkill = async (id_skill: number) => {
+    if (!idStudent) return;
     try {
-      await api.delete(`/students/2/skills/${id_skill}`);
-      const res = await api.get('/students/2');
+      await api.delete(`/students/${idStudent}/skills/${id_skill}`);
+      const res = await api.get(`/students/${idStudent}`);
       setProfile(res.data);
     } catch {
-      console.error('Erreur remove skill');
+      console.error("Erreur remove skill");
     }
   };
 
   if (loading) return <div className="text-sm text-gray-400">Chargement...</div>;
 
+  // ✅ Raha tsy misy profile encore
+  if (!profile) {
+    return (
+      <div className="bg-white border border-gray-100 rounded-xl p-8 text-center">
+        <i className="ti ti-user text-4xl text-gray-300 mb-2 block"></i>
+        <p className="text-sm text-gray-500 mb-4">Vous n&apos;avez pas encore de profil étudiant.</p>
+        <button
+          onClick={async () => {
+            try {
+              await api.post('/students', { id_user: user?.userId });
+              window.location.reload();
+            } catch (err: unknown) {
+  if (err && typeof err === 'object' && 'response' in err) {
+    const axiosErr = err as { response: { data: unknown; status: number } };
+    console.error('Create profile error:', JSON.stringify(axiosErr.response.data), axiosErr.response.status);
+  }}
+          }}
+          className="px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition"
+        >
+          Créer mon profil
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div>
-      {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-gray-800 mb-1">Mon profil</h1>
         <p className="text-sm text-gray-500">Gérez vos informations personnelles et vos compétences.</p>
@@ -114,24 +148,24 @@ export default function StudentProfilePage() {
         {/* Left — Avatar card */}
         <div className="bg-white border border-gray-100 rounded-xl p-6 text-center h-fit">
           <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-bold text-2xl mx-auto mb-3">
-            {profile?.user.prenom.charAt(0)}{profile?.user.nom.charAt(0)}
+            {profile.user.prenom.charAt(0)}{profile.user.nom.charAt(0)}
           </div>
           <h3 className="text-base font-semibold text-gray-800">
-            {profile?.user.prenom} {profile?.user.nom}
+            {profile.user.prenom} {profile.user.nom}
           </h3>
-          <p className="text-sm text-gray-400 mb-4">{profile?.user.email}</p>
+          <p className="text-sm text-gray-400 mb-4">{profile.user.email}</p>
           <div className="text-left bg-gray-50 rounded-lg p-3 text-xs text-gray-500 space-y-1">
-            {profile?.university && (
+            {profile.university && (
               <div className="flex items-center gap-2">
                 <i className="ti ti-school"></i> {profile.university}
               </div>
             )}
-            {profile?.level && (
+            {profile.level && (
               <div className="flex items-center gap-2">
                 <i className="ti ti-certificate"></i> {profile.level}
               </div>
             )}
-            {profile?.address && (
+            {profile.address && (
               <div className="flex items-center gap-2">
                 <i className="ti ti-map-pin"></i> {profile.address}
               </div>
@@ -141,7 +175,6 @@ export default function StudentProfilePage() {
 
         {/* Right — Form + skills */}
         <div className="lg:col-span-2 flex flex-col gap-6">
-          {/* Form */}
           <div className="bg-white border border-gray-100 rounded-xl p-6">
             <h3 className="text-base font-semibold text-gray-800 mb-4">Informations personnelles</h3>
 
@@ -202,7 +235,7 @@ export default function StudentProfilePage() {
                 disabled={saving}
                 className="self-start px-5 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
               >
-                {saving ? 'Enregistrement...' : 'Enregistrer'}
+                {saving ? "Enregistrement..." : "Enregistrer"}
               </button>
             </form>
           </div>
@@ -212,10 +245,10 @@ export default function StudentProfilePage() {
             <h3 className="text-base font-semibold text-gray-800 mb-4">Compétences</h3>
 
             <div className="flex flex-wrap gap-2 mb-4">
-              {profile?.skills.length === 0 && (
+              {profile.skills.length === 0 && (
                 <p className="text-sm text-gray-400">Aucune compétence ajoutée.</p>
               )}
-              {profile?.skills.map((s) => (
+              {profile.skills.map((s) => (
                 <span
                   key={s.skill.id_skill}
                   className="flex items-center gap-2 text-xs bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg"

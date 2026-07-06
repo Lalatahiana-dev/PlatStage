@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import api from '@/lib/axios';
+import { useEffect, useState } from "react";
+import api from "@/lib/axios";
 
 interface Application {
   id_application: number;
   motivation?: string;
-  status: 'EN_ATTENTE' | 'ACCEPTEE' | 'REFUSEE';
+  status: "EN_ATTENTE" | "ACCEPTEE" | "REFUSEE";
   applied_at: string;
   offer: {
     id_offer: number;
@@ -20,9 +20,21 @@ interface Application {
 }
 
 const statusConfig = {
-  EN_ATTENTE: { label: 'En attente', color: 'bg-yellow-50 text-yellow-600', icon: 'ti-clock' },
-  ACCEPTEE: { label: 'Acceptée', color: 'bg-green-50 text-green-600', icon: 'ti-circle-check' },
-  REFUSEE: { label: 'Refusée', color: 'bg-red-50 text-red-500', icon: 'ti-circle-x' },
+  EN_ATTENTE: {
+    label: "En attente",
+    color: "bg-yellow-50 text-yellow-600",
+    icon: "ti-clock",
+  },
+  ACCEPTEE: {
+    label: "Acceptée",
+    color: "bg-green-50 text-green-600",
+    icon: "ti-circle-check",
+  },
+  REFUSEE: {
+    label: "Refusée",
+    color: "bg-red-50 text-red-500",
+    icon: "ti-circle-x",
+  },
 };
 
 export default function StudentApplicationsPage() {
@@ -32,10 +44,10 @@ export default function StudentApplicationsPage() {
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        const res = await api.get('/applications/student/2'); // id_student
+        const res = await api.get("/applications/student/2"); // id_student
         setApplications(res.data);
       } catch {
-        console.error('Erreur fetch applications');
+        console.error("Erreur fetch applications");
       } finally {
         setLoading(false);
       }
@@ -47,23 +59,49 @@ export default function StudentApplicationsPage() {
     <div>
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-1">Mes candidatures</h1>
-        <p className="text-sm text-gray-500">Suivez l&apos;état de vos candidatures.</p>
+        <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+          Mes candidatures
+        </h1>
+        <p className="text-sm text-gray-500">
+          Suivez l&apos;état de vos candidatures.
+        </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         {[
-          { label: 'Total', value: applications.length, color: 'indigo', icon: 'ti-file-text' },
-          { label: 'En attente', value: applications.filter(a => a.status === 'EN_ATTENTE').length, color: 'yellow', icon: 'ti-clock' },
-          { label: 'Acceptées', value: applications.filter(a => a.status === 'ACCEPTEE').length, color: 'green', icon: 'ti-circle-check' },
+          {
+            label: "Total",
+            value: applications.length,
+            color: "indigo",
+            icon: "ti-file-text",
+          },
+          {
+            label: "En attente",
+            value: applications.filter((a) => a.status === "EN_ATTENTE").length,
+            color: "yellow",
+            icon: "ti-clock",
+          },
+          {
+            label: "Acceptées",
+            value: applications.filter((a) => a.status === "ACCEPTEE").length,
+            color: "green",
+            icon: "ti-circle-check",
+          },
         ].map((s) => (
-          <div key={s.label} className="bg-white border border-gray-100 rounded-xl p-4 flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center bg-${s.color}-50 text-${s.color}-600`}>
+          <div
+            key={s.label}
+            className="bg-white border border-gray-100 rounded-xl p-4 flex items-center gap-3"
+          >
+            <div
+              className={`w-10 h-10 rounded-lg flex items-center justify-center bg-${s.color}-50 text-${s.color}-600`}
+            >
               <i className={`ti ${s.icon} text-lg`}></i>
             </div>
             <div>
-              <div className="text-2xl font-semibold text-gray-800">{s.value}</div>
+              <div className="text-2xl font-semibold text-gray-800">
+                {s.value}
+              </div>
               <div className="text-xs text-gray-400">{s.label}</div>
             </div>
           </div>
@@ -76,7 +114,9 @@ export default function StudentApplicationsPage() {
       ) : applications.length === 0 ? (
         <div className="bg-white border border-gray-100 rounded-xl p-8 text-center">
           <i className="ti ti-file-text text-4xl text-gray-300 mb-2 block"></i>
-          <p className="text-sm text-gray-400">Aucune candidature pour le moment.</p>
+          <p className="text-sm text-gray-400">
+            Aucune candidature pour le moment.
+          </p>
         </div>
       ) : (
         <div className="flex flex-col gap-3">
@@ -93,8 +133,12 @@ export default function StudentApplicationsPage() {
                     {app.offer.company.company_name.charAt(0)}
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-800">{app.offer.title}</h3>
-                    <p className="text-xs text-gray-400">{app.offer.company.company_name}</p>
+                    <h3 className="text-sm font-semibold text-gray-800">
+                      {app.offer.title}
+                    </h3>
+                    <p className="text-xs text-gray-400">
+                      {app.offer.company.company_name}
+                    </p>
                     {app.offer.location && (
                       <p className="text-xs text-gray-400 flex items-center gap-1 mt-1">
                         <i className="ti ti-map-pin text-xs"></i>
@@ -108,9 +152,11 @@ export default function StudentApplicationsPage() {
                 <div className="flex items-center gap-4">
                   <div className="text-xs text-gray-400">
                     <i className="ti ti-calendar mr-1"></i>
-                    {new Date(app.applied_at).toLocaleDateString('fr-FR')}
+                    {new Date(app.applied_at).toLocaleDateString("fr-FR")}
                   </div>
-                  <span className={`flex items-center gap-1 text-xs px-3 py-1 rounded-lg font-medium ${status.color}`}>
+                  <span
+                    className={`flex items-center gap-1 text-xs px-3 py-1 rounded-lg font-medium ${status.color}`}
+                  >
                     <i className={`ti ${status.icon}`}></i>
                     {status.label}
                   </span>

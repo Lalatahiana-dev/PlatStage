@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import api from '@/lib/axios';
-import { useAuthStore } from '@/store/auth.store';
-import { jwtDecode } from 'jwt-decode';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import api from "@/lib/axios";
+import { useAuthStore } from "@/store/auth.store";
+import { jwtDecode } from "jwt-decode";
 
 export default function RegisterPage() {
   const router = useRouter();
   const { setAuth } = useAuthStore();
   const [step, setStep] = useState<1 | 2>(1); // ✅ Étape 1 = choix role, Étape 2 = formulaire
   const [form, setForm] = useState({
-    nom: '',
-    prenom: '',
-    email: '',
-    password: '',
-    role: '',
+    nom: "",
+    prenom: "",
+    email: "",
+    password: "",
+    role: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleRoleSelect = (role: string) => {
@@ -29,10 +29,10 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const res = await api.post('/auth/register', {
+      const res = await api.post("/auth/register", {
         nom: form.nom,
         prenom: form.prenom,
         email: form.email,
@@ -41,19 +41,25 @@ export default function RegisterPage() {
       });
 
       const token = res.data.access_token as string;
-      const user = jwtDecode<{ userId: number; email: string; roles: string[] }>(token);
+      const user = jwtDecode<{
+        userId: number;
+        email: string;
+        roles: string[];
+      }>(token);
       setAuth(user, token);
 
-      if (user.roles.includes('COMPANY')) router.push('/company');
-      else router.push('/student');
-
+      if (user.roles.includes("COMPANY")) router.push("/company");
+      else router.push("/student");
     } catch (err: unknown) {
-  if (err && typeof err === 'object' && 'response' in err) {
-    const axiosErr = err as { response: { data: unknown } };
-    console.error('Erreur inscription:', JSON.stringify(axiosErr.response.data));
-  }
-  setError("Erreur lors de l'inscription");
-} finally {
+      if (err && typeof err === "object" && "response" in err) {
+        const axiosErr = err as { response: { data: unknown } };
+        console.error(
+          "Erreur inscription:",
+          JSON.stringify(axiosErr.response.data),
+        );
+      }
+      setError("Erreur lors de l'inscription");
+    } finally {
       setLoading(false);
     }
   };
@@ -62,12 +68,18 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
         <h1 className="text-3xl font-bold text-indigo-600 mb-2">PlatStage</h1>
-        <h2 className="text-xl font-semibold text-gray-700 mb-2">Inscription</h2>
+        <h2 className="text-xl font-semibold text-gray-700 mb-2">
+          Inscription
+        </h2>
 
         {/* Progress */}
         <div className="flex items-center gap-2 mb-6">
-          <div className={`flex-1 h-1 rounded-full ${step >= 1 ? 'bg-indigo-500' : 'bg-gray-200'}`}></div>
-          <div className={`flex-1 h-1 rounded-full ${step >= 2 ? 'bg-indigo-500' : 'bg-gray-200'}`}></div>
+          <div
+            className={`flex-1 h-1 rounded-full ${step >= 1 ? "bg-indigo-500" : "bg-gray-200"}`}
+          ></div>
+          <div
+            className={`flex-1 h-1 rounded-full ${step >= 2 ? "bg-indigo-500" : "bg-gray-200"}`}
+          ></div>
         </div>
 
         {/* Step 1 — Choix du role */}
@@ -76,37 +88,46 @@ export default function RegisterPage() {
             <p className="text-sm text-gray-500 mb-6">Je suis...</p>
             <div className="flex flex-col gap-4">
               <button
-                onClick={() => handleRoleSelect('STUDENT')}
+                onClick={() => handleRoleSelect("STUDENT")}
                 className="flex items-center gap-4 p-5 border-2 border-gray-200 rounded-xl hover:border-indigo-400 hover:bg-indigo-50 transition text-left"
               >
                 <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center flex-shrink-0">
                   <i className="ti ti-school text-2xl text-indigo-600"></i>
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-800">Étudiant</h3>
+                  <h3 className="text-sm font-semibold text-gray-800">
+                    Étudiant
+                  </h3>
                   <p className="text-xs text-gray-400">Je cherche un stage</p>
                 </div>
                 <i className="ti ti-chevron-right text-gray-400 ml-auto"></i>
               </button>
 
               <button
-                onClick={() => handleRoleSelect('COMPANY')}
+                onClick={() => handleRoleSelect("COMPANY")}
                 className="flex items-center gap-4 p-5 border-2 border-gray-200 rounded-xl hover:border-purple-400 hover:bg-purple-50 transition text-left"
               >
                 <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
                   <i className="ti ti-building text-2xl text-purple-600"></i>
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-800">Entreprise</h3>
-                  <p className="text-xs text-gray-400">Je publie des offres de stage</p>
+                  <h3 className="text-sm font-semibold text-gray-800">
+                    Entreprise
+                  </h3>
+                  <p className="text-xs text-gray-400">
+                    Je publie des offres de stage
+                  </p>
                 </div>
                 <i className="ti ti-chevron-right text-gray-400 ml-auto"></i>
               </button>
             </div>
 
             <p className="text-center text-sm text-gray-500 mt-6">
-              Déjà un compte ?{' '}
-              <Link href="/login" className="text-indigo-600 font-medium hover:underline">
+              Déjà un compte ?{" "}
+              <Link
+                href="/login"
+                className="text-indigo-600 font-medium hover:underline"
+              >
                 Se connecter
               </Link>
             </p>
@@ -123,9 +144,13 @@ export default function RegisterPage() {
               >
                 <i className="ti ti-arrow-left text-sm"></i>
               </button>
-              <div className={`flex items-center gap-2 text-sm font-medium ${form.role === 'COMPANY' ? 'text-purple-600' : 'text-indigo-600'}`}>
-                <i className={`ti ${form.role === 'COMPANY' ? 'ti-building' : 'ti-school'}`}></i>
-                {form.role === 'COMPANY' ? 'Entreprise' : 'Étudiant'}
+              <div
+                className={`flex items-center gap-2 text-sm font-medium ${form.role === "COMPANY" ? "text-purple-600" : "text-indigo-600"}`}
+              >
+                <i
+                  className={`ti ${form.role === "COMPANY" ? "ti-building" : "ti-school"}`}
+                ></i>
+                {form.role === "COMPANY" ? "Entreprise" : "Étudiant"}
               </div>
             </div>
 
@@ -138,7 +163,9 @@ export default function RegisterPage() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Nom
+                  </label>
                   <input
                     type="text"
                     value={form.nom}
@@ -149,11 +176,15 @@ export default function RegisterPage() {
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Prénom
+                  </label>
                   <input
                     type="text"
                     value={form.prenom}
-                    onChange={(e) => setForm({ ...form, prenom: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, prenom: e.target.value })
+                    }
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 text-sm"
                     placeholder="Jean"
                     required
@@ -162,7 +193,9 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
                 <input
                   type="email"
                   value={form.email}
@@ -174,11 +207,15 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Mot de passe
+                </label>
                 <input
                   type="password"
                   value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, password: e.target.value })
+                  }
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 text-sm"
                   placeholder="••••••••"
                   required
@@ -189,18 +226,21 @@ export default function RegisterPage() {
                 type="submit"
                 disabled={loading}
                 className={`w-full text-white py-3 rounded-lg font-semibold transition disabled:opacity-50 ${
-                  form.role === 'COMPANY'
-                    ? 'bg-purple-600 hover:bg-purple-700'
-                    : 'bg-indigo-600 hover:bg-indigo-700'
+                  form.role === "COMPANY"
+                    ? "bg-purple-600 hover:bg-purple-700"
+                    : "bg-indigo-600 hover:bg-indigo-700"
                 }`}
               >
-                {loading ? 'Inscription...' : "S'inscrire"}
+                {loading ? "Inscription..." : "S'inscrire"}
               </button>
             </form>
 
             <p className="text-center text-sm text-gray-500 mt-4">
-              Déjà un compte ?{' '}
-              <Link href="/login" className="text-indigo-600 font-medium hover:underline">
+              Déjà un compte ?{" "}
+              <Link
+                href="/login"
+                className="text-indigo-600 font-medium hover:underline"
+              >
                 Se connecter
               </Link>
             </p>

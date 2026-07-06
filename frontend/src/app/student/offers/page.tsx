@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
-import api from '@/lib/axios';
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import api from "@/lib/axios";
 
 interface Offer {
   id_offer: number;
@@ -25,19 +25,18 @@ function OffersContent() {
   const searchParams = useSearchParams();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState(searchParams.get('q') ?? '');
+  const [search, setSearch] = useState(searchParams.get("q") ?? "");
   const [applying, setApplying] = useState<number | null>(null);
   const [success, setSuccess] = useState<number | null>(null);
   const [error, setError] = useState<number | null>(null);
 
-  
   useEffect(() => {
     const fetchOffers = async () => {
       try {
-        const res = await api.get('/offers');
+        const res = await api.get("/offers");
         setOffers(res.data);
       } catch {
-        console.error('Erreur fetch offers');
+        console.error("Erreur fetch offers");
       } finally {
         setLoading(false);
       }
@@ -49,10 +48,10 @@ function OffersContent() {
     setApplying(id_offer);
     setError(null);
     try {
-      await api.post('/applications', {
+      await api.post("/applications", {
         id_student: 2,
         id_offer,
-        motivation: '',
+        motivation: "",
       });
       setSuccess(id_offer);
     } catch {
@@ -72,8 +71,12 @@ function OffersContent() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-1">Offres de stage</h1>
-        <p className="text-sm text-gray-500">Découvrez les offres disponibles et postulez en un clic.</p>
+        <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+          Offres de stage
+        </h1>
+        <p className="text-sm text-gray-500">
+          Découvrez les offres disponibles et postulez en un clic.
+        </p>
       </div>
 
       <div className="flex items-center gap-2 bg-white border border-gray-100 rounded-xl px-4 py-3 mb-6">
@@ -86,7 +89,10 @@ function OffersContent() {
           className="flex-1 text-sm outline-none text-gray-700 placeholder-gray-400"
         />
         {search && (
-          <button onClick={() => setSearch('')} className="text-gray-400 hover:text-gray-600">
+          <button
+            onClick={() => setSearch("")}
+            className="text-gray-400 hover:text-gray-600"
+          >
             <i className="ti ti-x text-xs"></i>
           </button>
         )}
@@ -97,15 +103,23 @@ function OffersContent() {
       ) : filtered.length === 0 ? (
         <div className="bg-white border border-gray-100 rounded-xl p-8 text-center">
           <i className="ti ti-search text-4xl text-gray-300 mb-2 block"></i>
-          <p className="text-sm text-gray-400">Aucune offre trouvée pour &quot;{search}&quot;</p>
-          <button onClick={() => setSearch('')} className="text-xs text-indigo-500 mt-2 hover:underline">
+          <p className="text-sm text-gray-400">
+            Aucune offre trouvée pour &quot;{search}&quot;
+          </p>
+          <button
+            onClick={() => setSearch("")}
+            className="text-xs text-indigo-500 mt-2 hover:underline"
+          >
             Effacer la recherche
           </button>
         </div>
       ) : (
         <div className="flex flex-col gap-4">
           {filtered.map((offer) => (
-            <div key={offer.id_offer} className="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-sm transition">
+            <div
+              key={offer.id_offer}
+              className="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-sm transition"
+            >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
@@ -113,12 +127,18 @@ function OffersContent() {
                       {offer.company.company_name.charAt(0)}
                     </div>
                     <div>
-                      <h2 className="text-base font-semibold text-gray-800">{offer.title}</h2>
-                      <p className="text-xs text-gray-400">{offer.company.company_name} — {offer.company.sector}</p>
+                      <h2 className="text-base font-semibold text-gray-800">
+                        {offer.title}
+                      </h2>
+                      <p className="text-xs text-gray-400">
+                        {offer.company.company_name} — {offer.company.sector}
+                      </p>
                     </div>
                   </div>
 
-                  <p className="text-sm text-gray-500 mt-2 mb-3 line-clamp-2">{offer.description}</p>
+                  <p className="text-sm text-gray-500 mt-2 mb-3 line-clamp-2">
+                    {offer.description}
+                  </p>
 
                   <div className="flex flex-wrap gap-2">
                     {offer.location && (
@@ -136,11 +156,14 @@ function OffersContent() {
                     {offer.deadline && (
                       <span className="flex items-center gap-1 text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-lg">
                         <i className="ti ti-calendar text-xs"></i>
-                        {new Date(offer.deadline).toLocaleDateString('fr-FR')}
+                        {new Date(offer.deadline).toLocaleDateString("fr-FR")}
                       </span>
                     )}
                     {offer.categories.map((c) => (
-                      <span key={c.category.id_category} className="text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg">
+                      <span
+                        key={c.category.id_category}
+                        className="text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg"
+                      >
                         {c.category.name}
                       </span>
                     ))}
@@ -164,7 +187,7 @@ function OffersContent() {
                       disabled={applying === offer.id_offer}
                       className="px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
                     >
-                      {applying === offer.id_offer ? 'Envoi...' : 'Postuler'}
+                      {applying === offer.id_offer ? "Envoi..." : "Postuler"}
                     </button>
                   )}
                 </div>
@@ -179,7 +202,9 @@ function OffersContent() {
 
 export default function StudentOffersPage() {
   return (
-    <Suspense fallback={<div className="text-sm text-gray-400">Chargement...</div>}>
+    <Suspense
+      fallback={<div className="text-sm text-gray-400">Chargement...</div>}
+    >
       <OffersContent />
     </Suspense>
   );

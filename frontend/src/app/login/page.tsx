@@ -1,61 +1,84 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import api from '@/lib/axios';
-import { useAuthStore } from '@/store/auth.store';
-import { jwtDecode } from 'jwt-decode';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import api from "@/lib/axios";
+import { useAuthStore } from "@/store/auth.store";
+import { jwtDecode } from "jwt-decode";
 
 export default function LoginPage() {
   const router = useRouter();
   const { setAuth } = useAuthStore();
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
-  const [form, setForm] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedRole) {
-      setError('Veuillez sélectionner votre profil');
+      setError("Veuillez sélectionner votre profil");
       return;
     }
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const res = await api.post('/auth/login', form);
+      const res = await api.post("/auth/login", form);
       const token = res.data.access_token as string;
-      const user = jwtDecode<{ userId: number; email: string; roles: string[] }>(token);
+      const decoded = jwtDecode<{
+        sub: number;
+        email: string;
+        roles: string[];
+      }>(token);
 
-      // Verification role
+      const user = {
+        userId: decoded.sub, // ✅ sub → userId
+        email: decoded.email,
+        roles: decoded.roles,
+      };
+
       if (!user.roles.includes(selectedRole)) {
-        setError(`Ce compte n'est pas un compte ${
-          selectedRole === 'STUDENT' ? 'Étudiant' :
-          selectedRole === 'COMPANY' ? 'Entreprise' : 'Administrateur'
-        }`);
+        setError(
+          `Ce compte n'est pas un compte ${
+            selectedRole === "STUDENT"
+              ? "Étudiant"
+              : selectedRole === "COMPANY"
+                ? "Entreprise"
+                : "Administrateur"
+          }`,
+        );
         setLoading(false);
         return;
       }
 
       setAuth(user, token);
 
-      if (user.roles.includes('ADMIN')) router.push('/admin');
-      else if (user.roles.includes('COMPANY')) router.push('/company');
-      else router.push('/student');
-
+      if (user.roles.includes("ADMIN")) router.push("/admin");
+      else if (user.roles.includes("COMPANY")) router.push("/company");
+      else router.push("/student");
     } catch {
-      setError('Email ou mot de passe incorrect');
+      setError("Email ou mot de passe incorrect");
     } finally {
       setLoading(false);
     }
   };
 
   const roles = [
-    { value: 'STUDENT', label: 'Étudiant', icon: 'ti-school', color: 'indigo' },
-    { value: 'COMPANY', label: 'Entreprise', icon: 'ti-building', color: 'indigo' },
-    { value: 'ADMIN', label: 'Administrateur', icon: 'ti-shield', color: 'indigo' },
+    { value: "STUDENT", label: "Étudiant", icon: "ti-school", color: "indigo" },
+    {
+      value: "COMPANY",
+      label: "Entreprise",
+      icon: "ti-building",
+      color: "indigo",
+    },
+    {
+      value: "ADMIN",
+      label: "Administrateur",
+      icon: "ti-shield",
+      color: "indigo",
+    },
   ];
 
   return (
@@ -66,17 +89,22 @@ export default function LoginPage() {
 
         {/* Role selector */}
         <div className="mb-5">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Je suis...</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Je suis...
+          </label>
           <div className="grid grid-cols-3 gap-2">
             {roles.map((r) => (
               <button
                 key={r.value}
                 type="button"
-                onClick={() => { setSelectedRole(r.value); setError(''); }}
+                onClick={() => {
+                  setSelectedRole(r.value);
+                  setError("");
+                }}
                 className={`flex flex-col items-center gap-1 px-3 py-3 rounded-xl border-2 transition text-xs font-medium ${
                   selectedRole === r.value
-                    ? 'border-indigo-500 bg-indigo-50 text-indigo-600'
-                    : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                    ? "border-indigo-500 bg-indigo-50 text-indigo-600"
+                    : "border-gray-200 text-gray-500 hover:border-gray-300"
                 }`}
               >
                 <i className={`ti ${r.icon} text-xl`}></i>
@@ -94,7 +122,9 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
             <input
               type="email"
               value={form.email}
@@ -106,7 +136,9 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Mot de passe
+            </label>
             <input
               type="password"
               value={form.password}
@@ -122,13 +154,16 @@ export default function LoginPage() {
             disabled={loading || !selectedRole}
             className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-50"
           >
-            {loading ? 'Connexion...' : 'Se connecter'}
+            {loading ? "Connexion..." : "Se connecter"}
           </button>
         </form>
 
         <p className="text-center text-sm text-gray-500 mt-4">
-          Pas encore de compte ?{' '}
-          <Link href="/register" className="text-indigo-600 font-medium hover:underline">
+          Pas encore de compte ?{" "}
+          <Link
+            href="/register"
+            className="text-indigo-600 font-medium hover:underline"
+          >
             S&apos;inscrire
           </Link>
         </p>

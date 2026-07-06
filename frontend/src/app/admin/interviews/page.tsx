@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import api from '@/lib/axios';
+import { useEffect, useState } from "react";
+import api from "@/lib/axios";
 
 interface Interview {
   id_interview: number;
   scheduled_at: string;
   location?: string;
-  type: 'ONLINE' | 'ON_SITE';
-  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED';
+  type: "ONLINE" | "ON_SITE";
+  status: "PENDING" | "CONFIRMED" | "CANCELLED";
   application: {
     id_application: number;
     offer: {
@@ -22,29 +22,39 @@ interface Interview {
 }
 
 const statusConfig = {
-  PENDING: { label: 'En attente', color: 'bg-yellow-50 text-yellow-600' },
-  CONFIRMED: { label: 'Confirmé', color: 'bg-green-50 text-green-600' },
-  CANCELLED: { label: 'Annulé', color: 'bg-red-50 text-red-500' },
+  PENDING: { label: "En attente", color: "bg-yellow-50 text-yellow-600" },
+  CONFIRMED: { label: "Confirmé", color: "bg-green-50 text-green-600" },
+  CANCELLED: { label: "Annulé", color: "bg-red-50 text-red-500" },
 };
 
 const typeConfig = {
-  ONLINE: { label: 'En ligne', icon: 'ti-video', color: 'bg-indigo-50 text-indigo-600' },
-  ON_SITE: { label: 'Sur site', icon: 'ti-building', color: 'bg-purple-50 text-purple-600' },
+  ONLINE: {
+    label: "En ligne",
+    icon: "ti-video",
+    color: "bg-indigo-50 text-indigo-600",
+  },
+  ON_SITE: {
+    label: "Sur site",
+    icon: "ti-building",
+    color: "bg-purple-50 text-purple-600",
+  },
 };
 
 export default function AdminInterviewsPage() {
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'ALL' | 'PENDING' | 'CONFIRMED' | 'CANCELLED'>('ALL');
+  const [filter, setFilter] = useState<
+    "ALL" | "PENDING" | "CONFIRMED" | "CANCELLED"
+  >("ALL");
   const [updating, setUpdating] = useState<number | null>(null);
 
   useEffect(() => {
     const loadInterviews = async () => {
       try {
-        const res = await api.get('/interviews');
+        const res = await api.get("/interviews");
         setInterviews(res.data);
       } catch {
-        console.error('Erreur fetch interviews');
+        console.error("Erreur fetch interviews");
       } finally {
         setLoading(false);
       }
@@ -59,27 +69,31 @@ export default function AdminInterviewsPage() {
       setInterviews((prev) =>
         prev.map((i) =>
           i.id_interview === id_interview
-            ? { ...i, status: status as Interview['status'] }
-            : i
-        )
+            ? { ...i, status: status as Interview["status"] }
+            : i,
+        ),
       );
     } catch {
-      console.error('Erreur update status');
+      console.error("Erreur update status");
     } finally {
       setUpdating(null);
     }
   };
 
   const filtered = interviews.filter(
-    (i) => filter === 'ALL' || i.status === filter
+    (i) => filter === "ALL" || i.status === filter,
   );
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-1">Entretiens</h1>
-          <p className="text-sm text-gray-500">Gérez tous les entretiens planifiés.</p>
+          <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+            Entretiens
+          </h1>
+          <p className="text-sm text-gray-500">
+            Gérez tous les entretiens planifiés.
+          </p>
         </div>
         <div className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium">
           {interviews.length} entretiens
@@ -88,17 +102,17 @@ export default function AdminInterviewsPage() {
 
       {/* Filter */}
       <div className="flex gap-2 mb-6">
-        {(['ALL', 'PENDING', 'CONFIRMED', 'CANCELLED'] as const).map((f) => (
+        {(["ALL", "PENDING", "CONFIRMED", "CANCELLED"] as const).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
             className={`px-3 py-2 text-xs rounded-lg transition ${
               filter === f
-                ? 'bg-indigo-600 text-white'
-                : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                ? "bg-indigo-600 text-white"
+                : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}
           >
-            {f === 'ALL' ? 'Tous' : statusConfig[f].label}
+            {f === "ALL" ? "Tous" : statusConfig[f].label}
           </button>
         ))}
       </div>
@@ -106,16 +120,38 @@ export default function AdminInterviewsPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         {[
-          { label: 'En attente', value: interviews.filter(i => i.status === 'PENDING').length, color: 'yellow', icon: 'ti-clock' },
-          { label: 'Confirmés', value: interviews.filter(i => i.status === 'CONFIRMED').length, color: 'green', icon: 'ti-circle-check' },
-          { label: 'Annulés', value: interviews.filter(i => i.status === 'CANCELLED').length, color: 'red', icon: 'ti-circle-x' },
+          {
+            label: "En attente",
+            value: interviews.filter((i) => i.status === "PENDING").length,
+            color: "yellow",
+            icon: "ti-clock",
+          },
+          {
+            label: "Confirmés",
+            value: interviews.filter((i) => i.status === "CONFIRMED").length,
+            color: "green",
+            icon: "ti-circle-check",
+          },
+          {
+            label: "Annulés",
+            value: interviews.filter((i) => i.status === "CANCELLED").length,
+            color: "red",
+            icon: "ti-circle-x",
+          },
         ].map((s) => (
-          <div key={s.label} className="bg-white border border-gray-100 rounded-xl p-4 flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center bg-${s.color}-50 text-${s.color}-600`}>
+          <div
+            key={s.label}
+            className="bg-white border border-gray-100 rounded-xl p-4 flex items-center gap-3"
+          >
+            <div
+              className={`w-10 h-10 rounded-lg flex items-center justify-center bg-${s.color}-50 text-${s.color}-600`}
+            >
               <i className={`ti ${s.icon} text-lg`}></i>
             </div>
             <div>
-              <div className="text-2xl font-semibold text-gray-800">{s.value}</div>
+              <div className="text-2xl font-semibold text-gray-800">
+                {s.value}
+              </div>
               <div className="text-xs text-gray-400">{s.label}</div>
             </div>
           </div>
@@ -135,7 +171,10 @@ export default function AdminInterviewsPage() {
             const status = statusConfig[interview.status];
             const type = typeConfig[interview.type];
             return (
-              <div key={interview.id_interview} className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition">
+              <div
+                key={interview.id_interview}
+                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition"
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-bold text-sm flex-shrink-0">
@@ -144,7 +183,7 @@ export default function AdminInterviewsPage() {
                     </div>
                     <div>
                       <h3 className="text-sm font-semibold text-gray-800">
-                        {interview.application.student.user.prenom}{' '}
+                        {interview.application.student.user.prenom}{" "}
                         {interview.application.student.user.nom}
                       </h3>
                       <p className="text-xs text-gray-400">
@@ -152,7 +191,7 @@ export default function AdminInterviewsPage() {
                       </p>
                       <p className="text-xs text-indigo-500 mt-1">
                         <i className="ti ti-briefcase mr-1"></i>
-                        {interview.application.offer.title} —{' '}
+                        {interview.application.offer.title} —{" "}
                         {interview.application.offer.company.company_name}
                       </p>
                       {interview.location && (
@@ -165,35 +204,54 @@ export default function AdminInterviewsPage() {
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <span className={`flex items-center gap-1 text-xs px-3 py-1 rounded-lg ${type.color}`}>
+                    <span
+                      className={`flex items-center gap-1 text-xs px-3 py-1 rounded-lg ${type.color}`}
+                    >
                       <i className={`ti ${type.icon}`}></i>
                       {type.label}
                     </span>
                     <div className="text-xs text-gray-500 text-right">
                       <div className="font-medium">
-                        {new Date(interview.scheduled_at).toLocaleDateString('fr-FR')}
+                        {new Date(interview.scheduled_at).toLocaleDateString(
+                          "fr-FR",
+                        )}
                       </div>
                       <div>
-                        {new Date(interview.scheduled_at).toLocaleTimeString('fr-FR', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
+                        {new Date(interview.scheduled_at).toLocaleTimeString(
+                          "fr-FR",
+                          {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          },
+                        )}
                       </div>
                     </div>
-                    <span className={`text-xs px-3 py-1 rounded-lg font-medium ${status.color}`}>
+                    <span
+                      className={`text-xs px-3 py-1 rounded-lg font-medium ${status.color}`}
+                    >
                       {status.label}
                     </span>
-                    {interview.status === 'PENDING' && (
+                    {interview.status === "PENDING" && (
                       <div className="flex gap-2">
                         <button
-                          onClick={() => handleStatusChange(interview.id_interview, 'CONFIRMED')}
+                          onClick={() =>
+                            handleStatusChange(
+                              interview.id_interview,
+                              "CONFIRMED",
+                            )
+                          }
                           disabled={updating === interview.id_interview}
                           className="px-3 py-1.5 bg-green-50 text-green-600 text-xs rounded-lg hover:bg-green-100 transition disabled:opacity-50"
                         >
                           Confirmer
                         </button>
                         <button
-                          onClick={() => handleStatusChange(interview.id_interview, 'CANCELLED')}
+                          onClick={() =>
+                            handleStatusChange(
+                              interview.id_interview,
+                              "CANCELLED",
+                            )
+                          }
                           disabled={updating === interview.id_interview}
                           className="px-3 py-1.5 bg-red-50 text-red-500 text-xs rounded-lg hover:bg-red-100 transition disabled:opacity-50"
                         >
