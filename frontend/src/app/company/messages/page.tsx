@@ -81,12 +81,12 @@ export default function CompanyMessagesPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-1">Messages</h1>
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">Messages</h1>
         <p className="text-sm text-gray-500">Échangez avec les étudiants.</p>
       </div>
 
       <div
-        className="grid grid-cols-3 gap-4 bg-white border border-gray-100 rounded-xl overflow-hidden"
+        className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-white border border-gray-100 rounded-xl overflow-hidden"
         style={{ height: "600px" }}
       >
         {/* Conversations list */}
@@ -107,7 +107,7 @@ export default function CompanyMessagesPage() {
                   selected?.id_conversation === conv.id_conversation
                     ? "bg-indigo-50"
                     : ""
-                }`}
+                } ${selected && selected.id_conversation !== conv.id_conversation ? "hidden sm:block" : ""}`}
               >
                 <div className="flex items-center gap-3 mb-1">
                   <div className="w-9 h-9 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-xs flex-shrink-0">
@@ -134,7 +134,7 @@ export default function CompanyMessagesPage() {
         </div>
 
         {/* Chat window */}
-        <div className="col-span-2 flex flex-col">
+        <div className={`${selected ? "hidden sm:flex" : "flex"} sm:col-span-2 flex-col`}>
           {!selected ? (
             <div className="flex-1 flex items-center justify-center text-sm text-gray-400">
               Sélectionnez une conversation
@@ -143,6 +143,12 @@ export default function CompanyMessagesPage() {
             <>
               {/* Header */}
               <div className="border-b border-gray-100 p-4 flex items-center gap-3">
+                <button
+                  onClick={() => setSelected(null)}
+                  className="sm:hidden p-1 text-gray-500 hover:text-gray-700 mr-1"
+                >
+                  <i className="ti ti-arrow-left text-lg"></i>
+                </button>
                 <div className="w-9 h-9 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-xs">
                   {selected.student.user.prenom.charAt(0)}
                   {selected.student.user.nom.charAt(0)}

@@ -82,10 +82,10 @@ export default function LoginPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-indigo-600 mb-2">PlatStage</h1>
-        <h2 className="text-xl font-semibold text-gray-700 mb-6">Connexion</h2>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4 overflow-x-hidden">
+      <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-8 w-full max-w-md">
+        <h1 className="text-2xl sm:text-3xl font-bold text-indigo-600 mb-2">PlatStage</h1>
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-700 mb-6">Connexion</h2>
 
         {/* Role selector */}
         <div className="mb-5">

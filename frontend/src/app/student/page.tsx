@@ -25,10 +25,9 @@ export default function StudentPage() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [offers, applications, favorites] = await Promise.all([
+        const [offers, applications] = await Promise.all([
           api.get("/offers"),
           api.get("/applications/student/2"),
-          api.get("/favorites/student/2"),
         ]);
 
         const apps = applications.data;
@@ -55,9 +54,9 @@ export default function StudentPage() {
   return (
     <div>
       {/* Welcome */}
-      <div className="flex items-start justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+      <div className="flex items-start justify-between gap-4 mb-6">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">
             Bonjour, {user?.email.split("@")[0]} 👋
           </h1>
           <p className="text-sm text-gray-500">
@@ -65,8 +64,8 @@ export default function StudentPage() {
             avancez vers votre avenir professionnel.
           </p>
         </div>
-        <div className="w-16 h-16 bg-indigo-50 rounded-xl flex items-center justify-center">
-          <i className="ti ti-school text-4xl text-indigo-400"></i>
+        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-indigo-50 rounded-xl flex items-center justify-center flex-shrink-0">
+          <i className="ti ti-school text-3xl sm:text-4xl text-indigo-400"></i>
         </div>
       </div>
 
@@ -74,7 +73,7 @@ export default function StudentPage() {
       {loading ? (
         <div className="text-sm text-gray-400 mb-6">Chargement...</div>
       ) : (
-        <div className="grid grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
           {[
             {
               label: "Stages disponibles",
@@ -127,12 +126,12 @@ export default function StudentPage() {
       )}
 
       {/* Hero banner */}
-      <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-6 mb-6 flex justify-between items-center">
-        <div>
+      <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-5 sm:p-6 mb-6 flex flex-col sm:flex-row justify-between items-start gap-4">
+        <div className="min-w-0">
           <div className="text-xs text-indigo-500 font-medium mb-1">
             Trouvez le stage qui vous correspond
           </div>
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
             Votre avenir commence avec{" "}
             <span className="text-indigo-600">le bon stage.</span>
           </h2>
@@ -140,7 +139,7 @@ export default function StudentPage() {
             PlatStage vous aide à trouver, postuler et suivre vos stages en
             toute simplicité.
           </p>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <Link
               href="/student/offers"
               className="px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition"
@@ -155,8 +154,8 @@ export default function StudentPage() {
             </Link>
           </div>
         </div>
-        <div className="flex flex-col gap-2 flex-shrink-0">
-          <div className="bg-white border border-gray-100 rounded-xl p-3 flex items-center gap-2">
+        <div className="flex sm:flex-col gap-2 flex-shrink-0 w-full sm:w-auto">
+          <div className="bg-white border border-gray-100 rounded-xl p-3 flex items-center gap-2 flex-1 sm:flex-none">
             <i className="ti ti-users text-indigo-500"></i>
             <div>
               <div className="text-sm font-medium text-gray-700">+500</div>
@@ -165,7 +164,7 @@ export default function StudentPage() {
               </div>
             </div>
           </div>
-          <div className="bg-white border border-gray-100 rounded-xl p-3 flex items-center gap-2">
+          <div className="bg-white border border-gray-100 rounded-xl p-3 flex items-center gap-2 flex-1 sm:flex-none">
             <i className="ti ti-briefcase text-green-500"></i>
             <div>
               <div className="text-sm font-medium text-gray-700">+2000</div>
@@ -185,7 +184,7 @@ export default function StudentPage() {
             Voir toutes les étapes →
           </span>
         </div>
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {[
             {
               num: "1",
@@ -237,7 +236,7 @@ export default function StudentPage() {
       </div>
 
       {/* Bottom stats */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {[
           {
             value: "2500+",

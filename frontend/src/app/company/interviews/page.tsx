@@ -80,13 +80,13 @@ export default function CompanyInterviewsPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">
           Entretiens
         </h1>
         <p className="text-sm text-gray-500">Gérez les entretiens planifiés.</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
         {[
           {
             label: "Total",
@@ -143,8 +143,8 @@ export default function CompanyInterviewsPage() {
                 key={interview.id_interview}
                 className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition"
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-4 min-w-0">
                     <div className="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-bold text-sm flex-shrink-0">
                       {interview.application.student.user.prenom.charAt(0)}
                       {interview.application.student.user.nom.charAt(0)}
@@ -166,7 +166,7 @@ export default function CompanyInterviewsPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
                     <span
                       className={`flex items-center gap-1 text-xs px-3 py-1 rounded-lg ${type.color}`}
                     >

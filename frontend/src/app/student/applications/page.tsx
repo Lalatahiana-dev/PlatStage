@@ -68,7 +68,7 @@ export default function StudentApplicationsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
         {[
           {
             label: "Total",
@@ -125,10 +125,10 @@ export default function StudentApplicationsPage() {
             return (
               <div
                 key={app.id_application}
-                className="bg-white border border-gray-100 rounded-xl p-5 flex items-center justify-between hover:shadow-sm transition"
+                className="bg-white border border-gray-100 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:shadow-sm transition"
               >
                 {/* Left */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                   <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-sm flex-shrink-0">
                     {app.offer.company.company_name.charAt(0)}
                   </div>
@@ -149,7 +149,7 @@ export default function StudentApplicationsPage() {
                 </div>
 
                 {/* Right */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 sm:gap-4 ml-[52px] sm:ml-0">
                   <div className="text-xs text-gray-400">
                     <i className="ti ti-calendar mr-1"></i>
                     {new Date(app.applied_at).toLocaleDateString("fr-FR")}

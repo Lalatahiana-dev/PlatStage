@@ -47,16 +47,16 @@ export default function AdminUsersPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">
             Utilisateurs
           </h1>
           <p className="text-sm text-gray-500">
             Gérez tous les comptes utilisateurs.
           </p>
         </div>
-        <div className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium">
+        <div className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium self-start">
           {users.length} utilisateurs
         </div>
       </div>
@@ -78,73 +78,78 @@ export default function AdminUsersPage() {
         <div className="text-sm text-gray-400">Chargement...</div>
       ) : (
         <div className="bg-white border border-gray-100 rounded-xl overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-100">
-              <tr>
-                <th className="text-left text-xs font-medium text-gray-500 px-6 py-3">
-                  Utilisateur
-                </th>
-                <th className="text-left text-xs font-medium text-gray-500 px-6 py-3">
-                  Email
-                </th>
-                <th className="text-left text-xs font-medium text-gray-500 px-6 py-3">
-                  Rôles
-                </th>
-                <th className="text-left text-xs font-medium text-gray-500 px-6 py-3">
-                  Inscrit le
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((user) => (
-                <tr
-                  key={user.id_user}
-                  className="border-b border-gray-50 hover:bg-gray-50 transition"
-                >
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-bold text-xs">
-                        {user.prenom.charAt(0)}
-                        {user.nom.charAt(0)}
-                      </div>
-                      <div>
-                        <div className="text-sm font-medium text-gray-800">
-                          {user.prenom} {user.nom}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          #{user.id_user}
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {user.email}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex gap-1 flex-wrap">
-                      {user.roles.length === 0 ? (
-                        <span className="text-xs text-gray-400">
-                          Aucun rôle
-                        </span>
-                      ) : (
-                        user.roles.map((r, i) => (
-                          <span
-                            key={i}
-                            className={`text-xs px-2 py-1 rounded-lg font-medium ${roleColors[r.role.name] ?? "bg-gray-100 text-gray-600"}`}
-                          >
-                            {r.role.name}
-                          </span>
-                        ))
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-400">
-                    {new Date(user.created_at).toLocaleDateString("fr-FR")}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-100">
+                <tr>
+                  <th className="text-left text-xs font-medium text-gray-500 px-4 sm:px-6 py-3">
+                    Utilisateur
+                  </th>
+                  <th className="text-left text-xs font-medium text-gray-500 px-4 sm:px-6 py-3 hidden sm:table-cell">
+                    Email
+                  </th>
+                  <th className="text-left text-xs font-medium text-gray-500 px-4 sm:px-6 py-3">
+                    Rôles
+                  </th>
+                  <th className="text-left text-xs font-medium text-gray-500 px-4 sm:px-6 py-3 hidden md:table-cell">
+                    Inscrit le
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filtered.map((user) => (
+                  <tr
+                    key={user.id_user}
+                    className="border-b border-gray-50 hover:bg-gray-50 transition"
+                  >
+                    <td className="px-4 sm:px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-bold text-xs flex-shrink-0">
+                          {user.prenom.charAt(0)}
+                          {user.nom.charAt(0)}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-sm font-medium text-gray-800 truncate">
+                            {user.prenom} {user.nom}
+                          </div>
+                          <div className="text-xs text-gray-400 sm:hidden truncate">
+                            {user.email}
+                          </div>
+                          <div className="text-xs text-gray-400 hidden sm:block">
+                            #{user.id_user}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 sm:px-6 py-4 text-sm text-gray-600 hidden sm:table-cell">
+                      {user.email}
+                    </td>
+                    <td className="px-4 sm:px-6 py-4">
+                      <div className="flex gap-1 flex-wrap">
+                        {user.roles.length === 0 ? (
+                          <span className="text-xs text-gray-400">
+                            Aucun rôle
+                          </span>
+                        ) : (
+                          user.roles.map((r, i) => (
+                            <span
+                              key={i}
+                              className={`text-xs px-2 py-1 rounded-lg font-medium ${roleColors[r.role.name] ?? "bg-gray-100 text-gray-600"}`}
+                            >
+                              {r.role.name}
+                            </span>
+                          ))
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 sm:px-6 py-4 text-sm text-gray-400 hidden md:table-cell">
+                      {new Date(user.created_at).toLocaleDateString("fr-FR")}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

@@ -65,10 +65,10 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-indigo-600 mb-2">PlatStage</h1>
-        <h2 className="text-xl font-semibold text-gray-700 mb-2">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4 overflow-x-hidden">
+      <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-8 w-full max-w-md">
+        <h1 className="text-2xl sm:text-3xl font-bold text-indigo-600 mb-2">PlatStage</h1>
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">
           Inscription
         </h2>
 
@@ -89,9 +89,9 @@ export default function RegisterPage() {
             <div className="flex flex-col gap-4">
               <button
                 onClick={() => handleRoleSelect("STUDENT")}
-                className="flex items-center gap-4 p-5 border-2 border-gray-200 rounded-xl hover:border-indigo-400 hover:bg-indigo-50 transition text-left"
+                className="flex items-center gap-3 sm:gap-4 p-4 sm:p-5 border-2 border-gray-200 rounded-xl hover:border-indigo-400 hover:bg-indigo-50 transition text-left"
               >
-                <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-50 rounded-xl flex items-center justify-center flex-shrink-0">
                   <i className="ti ti-school text-2xl text-indigo-600"></i>
                 </div>
                 <div>
@@ -105,9 +105,9 @@ export default function RegisterPage() {
 
               <button
                 onClick={() => handleRoleSelect("COMPANY")}
-                className="flex items-center gap-4 p-5 border-2 border-gray-200 rounded-xl hover:border-purple-400 hover:bg-purple-50 transition text-left"
+                className="flex items-center gap-3 sm:gap-4 p-4 sm:p-5 border-2 border-gray-200 rounded-xl hover:border-purple-400 hover:bg-purple-50 transition text-left"
               >
-                <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
                   <i className="ti ti-building text-2xl text-purple-600"></i>
                 </div>
                 <div>
@@ -161,7 +161,7 @@ export default function RegisterPage() {
             )}
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Nom

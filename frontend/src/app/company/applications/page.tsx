@@ -108,7 +108,7 @@ function CompanyApplicationsContent() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">
           Candidatures reçues
         </h1>
         <p className="text-sm text-gray-500">
@@ -154,7 +154,7 @@ function CompanyApplicationsContent() {
         </div>
       )}
 
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
         {[
           {
             label: "Total",
@@ -214,8 +214,8 @@ function CompanyApplicationsContent() {
                 key={app.id_application}
                 className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition"
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-4 min-w-0">
                     <div className="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-bold text-sm flex-shrink-0">
                       {app.student.user.prenom.charAt(0)}
                       {app.student.user.nom.charAt(0)}
@@ -244,7 +244,7 @@ function CompanyApplicationsContent() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
                     <div className="text-xs text-gray-400">
                       {new Date(app.applied_at).toLocaleDateString("fr-FR")}
                     </div>
@@ -279,7 +279,7 @@ function CompanyApplicationsContent() {
                 </div>
 
                 {app.motivation && (
-                  <div className="mt-3 ml-14 bg-gray-50 rounded-lg p-3">
+                  <div className="mt-3 sm:ml-14 bg-gray-50 rounded-lg p-3">
                     <p className="text-xs text-gray-500 italic">
                       &quot;{app.motivation}&quot;
                     </p>

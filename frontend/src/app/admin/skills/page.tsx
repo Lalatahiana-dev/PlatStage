@@ -61,9 +61,9 @@ export default function AdminSkillsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">
             Compétences
           </h1>
           <p className="text-sm text-gray-500">
@@ -76,7 +76,7 @@ export default function AdminSkillsPage() {
             setName("");
             setShowForm(true);
           }}
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition"
         >
           <i className="ti ti-plus"></i>
           Nouvelle compétence

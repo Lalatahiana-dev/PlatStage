@@ -81,10 +81,10 @@ const steps = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white flex flex-col font-sans">
+    <div className="min-h-screen bg-white flex flex-col font-sans overflow-x-hidden">
 
       {/* ── Navbar ───────────────────────────────────────────────────────── */}
-      <nav className="px-8 py-4 flex justify-between items-center border-b border-gray-100 sticky top-0 bg-white/95 backdrop-blur z-50">
+      <nav className="px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center border-b border-gray-100 sticky top-0 bg-white/95 backdrop-blur z-50">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-sm shadow-indigo-300">
             <span className="text-white font-black text-sm tracking-tight">P</span>
@@ -92,7 +92,7 @@ export default function Home() {
           <span className="text-lg font-bold text-gray-900 tracking-tight">PlatStage</span>
         </div>
         <div className="hidden md:flex items-center gap-6 text-sm text-gray-500">
-          <Link href="/offers" className="hover:text-indigo-600 transition">Offres</Link>
+          <Link href="/home" className="hover:text-indigo-600 transition">Offres</Link>
           <Link href="#features" className="hover:text-indigo-600 transition">Fonctionnalités</Link>
           <Link href="#how" className="hover:text-indigo-600 transition">Comment ça marche</Link>
         </div>
@@ -113,15 +113,15 @@ export default function Home() {
       </nav>
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="flex-1 px-8 py-20 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <section className="flex-1 px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
         {/* Left */}
         <div>
-          <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-semibold px-4 py-2 rounded-full mb-8 tracking-wide uppercase">
+          <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-semibold px-4 py-2 rounded-full mb-6 sm:mb-8 tracking-wide uppercase">
             <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
             Plateforme #1 à Madagascar
           </div>
 
-          <h1 className="text-5xl xl:text-6xl font-black text-gray-900 leading-[1.1] tracking-tight mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-black text-gray-900 leading-[1.1] tracking-tight mb-4 sm:mb-6">
             Le stage qui{' '}
             <span className="relative inline-block">
               <span className="relative z-10 text-indigo-600">lance</span>
@@ -130,12 +130,12 @@ export default function Home() {
             votre carrière commence ici
           </h1>
 
-          <p className="text-lg text-gray-500 leading-relaxed mb-10 max-w-lg">
+          <p className="text-base sm:text-lg text-gray-500 leading-relaxed mb-6 sm:mb-8 lg:mb-10 max-w-lg">
             PlatStage connecte les étudiants malgaches avec les meilleures entreprises.
             Postulez, suivez, réussissez — tout en un seul endroit.
           </p>
 
-          <div className="flex flex-wrap gap-4 mb-12">
+          <div className="flex flex-wrap gap-3 sm:gap-4 mb-8 sm:mb-10 lg:mb-12">
             <Link
               href="/register"
               className="px-7 py-3.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-200 text-sm"
@@ -143,7 +143,7 @@ export default function Home() {
               Commencer gratuitement →
             </Link>
             <Link
-              href="/offres"
+              href="/home"
               className="px-7 py-3.5 bg-white border border-gray-200 text-gray-700 font-semibold rounded-xl hover:border-indigo-300 hover:text-indigo-600 transition text-sm"
             >
               Voir les offres
@@ -151,7 +151,7 @@ export default function Home() {
           </div>
 
           {/* Stats */}
-          <div className="flex gap-8">
+          <div className="flex flex-wrap gap-6 sm:gap-8">
             {[
               { val: '100+', label: 'Offres actives' },
               { val: '50+', label: 'Entreprises' },
@@ -232,13 +232,13 @@ export default function Home() {
       </section>
 
       {/* ── Features ─────────────────────────────────────────────────────── */}
-      <section id="features" className="px-8 py-20 bg-gray-50">
+      <section id="features" className="px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
+          <div className="text-center mb-8 sm:mb-10 lg:mb-14">
             <p className="text-xs font-bold uppercase tracking-widest text-indigo-500 mb-3">
               Fonctionnalités
             </p>
-            <h2 className="text-4xl font-black text-gray-900 tracking-tight mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-4">
               Tout ce qu&apos;il vous faut
             </h2>
             <p className="text-gray-400 max-w-xl mx-auto">
@@ -266,13 +266,13 @@ export default function Home() {
       </section>
 
       {/* ── Comment ça marche ────────────────────────────────────────────── */}
-      <section id="how" className="px-8 py-20">
+      <section id="how" className="px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-14">
+          <div className="text-center mb-8 sm:mb-10 lg:mb-14">
             <p className="text-xs font-bold uppercase tracking-widest text-indigo-500 mb-3">
               Processus
             </p>
-            <h2 className="text-4xl font-black text-gray-900 tracking-tight mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-4">
               Démarrez en 3 étapes
             </h2>
           </div>
@@ -281,7 +281,7 @@ export default function Home() {
             {steps.map((s, i) => (
               <div key={s.n} className="flex flex-col items-start">
                 <div className="flex items-center gap-4 mb-4 w-full">
-                  <span className="text-4xl font-black text-indigo-100 leading-none">
+                  <span className="text-3xl sm:text-4xl font-black text-indigo-100 leading-none">
                     {s.n}
                   </span>
                   {i < steps.length - 1 && (
@@ -297,17 +297,17 @@ export default function Home() {
       </section>
 
       {/* ── Pour qui ─────────────────────────────────────────────────────── */}
-      <section className="px-8 py-20 bg-gray-50">
+      <section className="px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 bg-gray-50">
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Étudiants */}
-          <div className="bg-white rounded-3xl border border-gray-100 p-8 hover:shadow-sm transition">
+          <div className="bg-white rounded-3xl border border-gray-100 p-6 sm:p-8 hover:shadow-sm transition">
             <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center mb-6">
               <i className="ti ti-school text-2xl text-indigo-600"></i>
             </div>
             <p className="text-xs font-bold uppercase tracking-widest text-indigo-400 mb-2">
               Étudiants
             </p>
-            <h3 className="text-2xl font-black text-gray-900 mb-3">
+            <h3 className="text-xl sm:text-2xl font-black text-gray-900 mb-3">
               Trouvez votre stage idéal
             </h3>
             <p className="text-sm text-gray-400 leading-relaxed mb-6">
@@ -331,14 +331,14 @@ export default function Home() {
           </div>
 
           {/* Entreprises */}
-          <div className="bg-indigo-600 rounded-3xl p-8 hover:bg-indigo-700 transition">
+          <div className="bg-indigo-600 rounded-3xl p-6 sm:p-8 hover:bg-indigo-700 transition">
             <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6">
               <i className="ti ti-building text-2xl text-white"></i>
             </div>
             <p className="text-xs font-bold uppercase tracking-widest text-indigo-200 mb-2">
               Entreprises
             </p>
-            <h3 className="text-2xl font-black text-white mb-3">
+            <h3 className="text-xl sm:text-2xl font-black text-white mb-3">
               Recrutez les meilleurs talents
             </h3>
             <p className="text-sm text-indigo-100 leading-relaxed mb-6">
@@ -364,19 +364,19 @@ export default function Home() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section className="px-8 py-24 bg-gray-900 text-white text-center">
+      <section className="px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 bg-gray-900 text-white text-center">
         <div className="max-w-2xl mx-auto">
           <p className="text-xs font-bold uppercase tracking-widest text-indigo-400 mb-4">
             Prêt à commencer ?
           </p>
-          <h2 className="text-4xl font-black mb-5 leading-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4 sm:mb-5 leading-tight">
             Votre prochain stage est sur PlatStage
           </h2>
-          <p className="text-gray-400 mb-10 leading-relaxed">
+          <p className="text-gray-400 mb-6 sm:mb-8 lg:mb-10 leading-relaxed">
             Rejoignez des milliers d&apos;étudiants et d&apos;entreprises qui font confiance à PlatStage.
             Inscription gratuite, en 2 minutes.
           </p>
-          <div className="flex gap-4 justify-center">
+          <div className="flex flex-wrap gap-3 sm:gap-4 justify-center">
             <Link
               href="/register"
               className="px-8 py-3.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-500 transition shadow-lg shadow-indigo-900 text-sm"
@@ -384,7 +384,7 @@ export default function Home() {
               Créer un compte gratuit
             </Link>
             <Link
-              href="/offers"
+              href="/home"
               className="px-8 py-3.5 border border-gray-700 text-gray-300 font-semibold rounded-xl hover:border-gray-500 hover:text-white transition text-sm"
             >
               Voir les offres
@@ -394,7 +394,7 @@ export default function Home() {
       </section>
 
       {/* ── Footer ───────────────────────────────────────────────────────── */}
-      <footer className="px-8 py-8 border-t border-gray-100 bg-white">
+      <footer className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 border-t border-gray-100 bg-white">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 bg-indigo-600 rounded flex items-center justify-center">
@@ -406,7 +406,7 @@ export default function Home() {
             © 2026 PlatStage — Tous droits réservés
           </p>
           <div className="flex gap-5 text-sm text-gray-400">
-            <Link href="/offers" className="hover:text-indigo-600 transition">Offres</Link>
+            <Link href="/home" className="hover:text-indigo-600 transition">Offres</Link>
             <Link href="/login" className="hover:text-indigo-600 transition">Connexion</Link>
             <Link href="/register" className="hover:text-indigo-600 transition">Inscription</Link>
           </div>

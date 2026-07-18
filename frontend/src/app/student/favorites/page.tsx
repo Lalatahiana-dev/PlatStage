@@ -56,7 +56,7 @@ export default function StudentFavoritesPage() {
     <div>
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">
           Mes favoris
         </h1>
         <p className="text-sm text-gray-500">

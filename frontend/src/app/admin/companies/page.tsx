@@ -58,14 +58,14 @@ export default function AdminCompaniesPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">
             Entreprises
           </h1>
           <p className="text-sm text-gray-500">Gérez toutes les entreprises.</p>
         </div>
-        <div className="bg-purple-50 text-purple-600 px-4 py-2 rounded-xl text-sm font-medium">
+        <div className="bg-purple-50 text-purple-600 px-4 py-2 rounded-xl text-sm font-medium self-start">
           {companies.length} entreprises
         </div>
       </div>
@@ -91,24 +91,24 @@ export default function AdminCompaniesPage() {
               key={company.id_company}
               className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-4 min-w-0">
                   <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 font-bold text-lg flex-shrink-0">
                     {company.company_name.charAt(0)}
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-semibold text-gray-800">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="text-sm font-semibold text-gray-800 truncate">
                         {company.company_name}
                       </h3>
                       {company.is_verified && (
-                        <span className="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-lg">
+                        <span className="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-lg flex-shrink-0">
                           <i className="ti ti-circle-check mr-1"></i>Vérifié
                         </span>
                       )}
                     </div>
                     <p className="text-xs text-gray-400">{company.sector}</p>
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-xs text-gray-400 mt-1 truncate">
                       <i className="ti ti-user mr-1"></i>
                       {company.user.prenom} {company.user.nom} —{" "}
                       {company.user.email}
@@ -116,7 +116,7 @@ export default function AdminCompaniesPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 flex-wrap">
                   {company.address && (
                     <span className="text-xs text-gray-400 flex items-center gap-1">
                       <i className="ti ti-map-pin"></i>

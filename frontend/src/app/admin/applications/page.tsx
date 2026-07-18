@@ -86,22 +86,22 @@ export default function AdminApplicationsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">
             Candidatures
           </h1>
           <p className="text-sm text-gray-500">
             Gérez toutes les candidatures.
           </p>
         </div>
-        <div className="bg-yellow-50 text-yellow-600 px-4 py-2 rounded-xl text-sm font-medium">
+        <div className="bg-yellow-50 text-yellow-600 px-4 py-2 rounded-xl text-sm font-medium self-start">
           {applications.length} candidatures
         </div>
       </div>
 
       {/* Search + Filter */}
-      <div className="flex gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="flex-1 flex items-center gap-2 bg-white border border-gray-100 rounded-xl px-4 py-3">
           <i className="ti ti-search text-gray-400"></i>
           <input
@@ -112,7 +112,7 @@ export default function AdminApplicationsPage() {
             className="flex-1 text-sm outline-none text-gray-700 placeholder-gray-400"
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {(["ALL", "EN_ATTENTE", "ACCEPTEE", "REFUSEE"] as const).map((f) => (
             <button
               key={f}
@@ -130,7 +130,7 @@ export default function AdminApplicationsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
         {[
           {
             label: "En attente",
@@ -186,8 +186,8 @@ export default function AdminApplicationsPage() {
                 key={app.id_application}
                 className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition"
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-4 min-w-0">
                     <div className="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-bold text-sm flex-shrink-0">
                       {app.student.user.prenom.charAt(0)}
                       {app.student.user.nom.charAt(0)}
@@ -206,7 +206,7 @@ export default function AdminApplicationsPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
                     <div className="text-xs text-gray-400">
                       {new Date(app.applied_at).toLocaleDateString("fr-FR")}
                     </div>
@@ -241,7 +241,7 @@ export default function AdminApplicationsPage() {
                 </div>
 
                 {app.motivation && (
-                  <div className="mt-3 ml-14 bg-gray-50 rounded-lg p-3">
+                  <div className="mt-3 sm:ml-14 bg-gray-50 rounded-lg p-3">
                     <p className="text-xs text-gray-500 italic">
                       &quot;{app.motivation}&quot;
                     </p>

@@ -71,7 +71,7 @@ function OffersContent() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">
           Offres de stage
         </h1>
         <p className="text-sm text-gray-500">
@@ -118,10 +118,10 @@ function OffersContent() {
           {filtered.map((offer) => (
             <div
               key={offer.id_offer}
-              className="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-sm transition"
+              className="bg-white border border-gray-100 rounded-xl p-4 sm:p-6 hover:shadow-sm transition"
             >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+                <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-sm flex-shrink-0">
                       {offer.company.company_name.charAt(0)}
@@ -170,7 +170,7 @@ function OffersContent() {
                   </div>
                 </div>
 
-                <div className="flex flex-col items-end gap-2 ml-4 flex-shrink-0">
+                <div className="flex flex-col items-start sm:items-end gap-2 sm:ml-4 flex-shrink-0">
                   {success === offer.id_offer ? (
                     <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-3 py-2 rounded-lg">
                       <i className="ti ti-circle-check"></i>

@@ -62,17 +62,17 @@ export default function CompanyPage() {
   return (
     <div>
       {/* Welcome */}
-      <div className="flex items-start justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+      <div className="flex items-start justify-between gap-4 mb-6">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">
             Bonjour, {user?.email.split("@")[0]} 👋
           </h1>
           <p className="text-sm text-gray-500">
             Gérez vos offres de stage et trouvez les meilleurs talents.
           </p>
         </div>
-        <div className="w-16 h-16 bg-indigo-50 rounded-xl flex items-center justify-center">
-          <i className="ti ti-building text-4xl text-indigo-400"></i>
+        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-indigo-50 rounded-xl flex items-center justify-center flex-shrink-0">
+          <i className="ti ti-building text-2xl sm:text-4xl text-indigo-400"></i>
         </div>
       </div>
 
@@ -80,7 +80,7 @@ export default function CompanyPage() {
       {loading ? (
         <div className="text-sm text-gray-400 mb-6">Chargement...</div>
       ) : (
-        <div className="grid grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
           {[
             {
               label: "Mes offres",
@@ -128,7 +128,7 @@ export default function CompanyPage() {
       )}
 
       {/* Quick actions */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Link
           href="/company/offers"
           className="bg-indigo-50 border border-indigo-100 rounded-xl p-6 hover:shadow-sm transition flex items-center gap-4"

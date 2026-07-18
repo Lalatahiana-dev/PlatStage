@@ -45,10 +45,10 @@ export default async function OffersPage() {
   const offers = await getOffers();
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col overflow-x-hidden">
 
       {/* Navbar */}
-      <nav className="px-8 py-4 flex justify-between items-center border-b border-gray-100 sticky top-0 bg-white/95 backdrop-blur z-50">
+      <nav className="px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center border-b border-gray-100 sticky top-0 bg-white/95 backdrop-blur z-50">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
             <span className="text-white font-black text-sm">P</span>
@@ -72,25 +72,25 @@ export default async function OffersPage() {
       </nav>
 
       {/* Header */}
-      <div className="bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-8 py-14 border-b border-gray-100">
+      <div className="bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-4 sm:px-6 lg:px-8 py-10 sm:py-14 border-b border-gray-100">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-xs font-bold uppercase tracking-widest text-indigo-500 mb-3">
             Offres de stage
           </p>
-          <h1 className="text-4xl font-black text-gray-900 tracking-tight mb-3">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-3">
             {offers.length} offre{offers.length !== 1 ? 's' : ''} disponible{offers.length !== 1 ? 's' : ''}
           </h1>
-          <p className="text-gray-400 text-base">
+          <p className="text-gray-400 text-sm sm:text-base">
             Trouvez le stage qui correspond à votre profil et postulez dès maintenant.
           </p>
         </div>
       </div>
 
       {/* Liste offres */}
-      <main className="flex-1 px-8 py-10">
+      <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         <div className="max-w-4xl mx-auto">
           {offers.length === 0 ? (
-            <div className="text-center py-20">
+            <div className="text-center py-12 sm:py-20">
               <i className="ti ti-briefcase-off text-5xl text-gray-200 block mb-4"></i>
               <p className="text-gray-400 text-sm">Aucune offre disponible pour le moment.</p>
               <Link href="/" className="mt-4 inline-block text-sm text-indigo-600 hover:underline">
@@ -98,17 +98,17 @@ export default async function OffersPage() {
               </Link>
             </div>
           ) : (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3 sm:gap-4">
               {offers.map((offer) => (
                 <div
                   key={offer.id_offer}
-                  className="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-md hover:border-indigo-100 transition group"
+                  className="bg-white border border-gray-100 rounded-2xl p-4 sm:p-6 hover:shadow-md hover:border-indigo-100 transition group"
                 >
-                  <div className="flex items-start justify-between gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
                     {/* Infos */}
-                    <div className="flex items-start gap-4 flex-1 min-w-0">
+                    <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
                       {/* Initiale company */}
-                      <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-700 font-black text-lg flex-shrink-0">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-700 font-black text-base sm:text-lg flex-shrink-0">
                         {offer.company.company_name.charAt(0).toUpperCase()}
                       </div>
 
@@ -157,7 +157,7 @@ export default async function OffersPage() {
                               })}
                             </span>
                           )}
-                          <span className="text-xs text-gray-300">·</span>
+                          <span className="text-xs text-gray-300 hidden sm:inline">·</span>
                           <span className="text-xs text-gray-400">
                             {timeAgo(offer.created_at)}
                           </span>
@@ -180,10 +180,10 @@ export default async function OffersPage() {
                     </div>
 
                     {/* Bouton postuler → /register */}
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 sm:self-center">
                       <Link
                         href="/register"
-                        className="inline-block px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition shadow-sm shadow-indigo-200 whitespace-nowrap"
+                        className="block sm:inline-block text-center px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition shadow-sm shadow-indigo-200 whitespace-nowrap"
                       >
                         Postuler →
                       </Link>
@@ -197,7 +197,7 @@ export default async function OffersPage() {
       </main>
 
       {/* CTA bas */}
-      <div className="border-t border-gray-100 bg-indigo-50 px-8 py-10 text-center">
+      <div className="border-t border-gray-100 bg-indigo-50 px-4 sm:px-6 lg:px-8 py-8 sm:py-10 text-center">
         <p className="text-sm font-semibold text-gray-800 mb-1">Déjà inscrit ?</p>
         <p className="text-xs text-gray-400 mb-4">
           Connectez-vous pour postuler directement depuis votre espace étudiant.
@@ -211,8 +211,8 @@ export default async function OffersPage() {
       </div>
 
       {/* Footer */}
-      <footer className="px-8 py-6 border-t border-gray-100">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+      <footer className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 border-t border-gray-100">
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 bg-indigo-600 rounded flex items-center justify-center">
               <span className="text-white font-black text-xs">P</span>

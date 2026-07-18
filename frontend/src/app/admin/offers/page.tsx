@@ -82,22 +82,22 @@ export default function AdminOffersPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">
             Offres de stage
           </h1>
           <p className="text-sm text-gray-500">
             Gérez toutes les offres publiées.
           </p>
         </div>
-        <div className="bg-green-50 text-green-600 px-4 py-2 rounded-xl text-sm font-medium">
+        <div className="bg-green-50 text-green-600 px-4 py-2 rounded-xl text-sm font-medium self-start">
           {offers.length} offres
         </div>
       </div>
 
       {/* Search + Filter */}
-      <div className="flex gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="flex-1 flex items-center gap-2 bg-white border border-gray-100 rounded-xl px-4 py-3">
           <i className="ti ti-search text-gray-400"></i>
           <input
@@ -108,7 +108,7 @@ export default function AdminOffersPage() {
             className="flex-1 text-sm outline-none text-gray-700 placeholder-gray-400"
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {(["ALL", "PUBLISHED", "DRAFT", "CLOSED"] as const).map((f) => (
             <button
               key={f}
@@ -141,9 +141,9 @@ export default function AdminOffersPage() {
                 key={offer.id_offer}
                 className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition"
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-1">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
                       <h3 className="text-sm font-semibold text-gray-800">
                         {offer.title}
                       </h3>
@@ -180,7 +180,7 @@ export default function AdminOffersPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 ml-4">
+                  <div className="flex items-center gap-2 sm:ml-4 flex-shrink-0 flex-wrap">
                     {offer.status === "DRAFT" && (
                       <button
                         onClick={() =>

@@ -86,22 +86,22 @@ export default function AdminInterviewsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">
             Entretiens
           </h1>
           <p className="text-sm text-gray-500">
             Gérez tous les entretiens planifiés.
           </p>
         </div>
-        <div className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium">
+        <div className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium self-start">
           {interviews.length} entretiens
         </div>
       </div>
 
       {/* Filter */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-6 flex-wrap">
         {(["ALL", "PENDING", "CONFIRMED", "CANCELLED"] as const).map((f) => (
           <button
             key={f}
@@ -118,7 +118,7 @@ export default function AdminInterviewsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
         {[
           {
             label: "En attente",
@@ -175,8 +175,8 @@ export default function AdminInterviewsPage() {
                 key={interview.id_interview}
                 className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition"
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-4 min-w-0">
                     <div className="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-bold text-sm flex-shrink-0">
                       {interview.application.student.user.prenom.charAt(0)}
                       {interview.application.student.user.nom.charAt(0)}
@@ -203,7 +203,7 @@ export default function AdminInterviewsPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
                     <span
                       className={`flex items-center gap-1 text-xs px-3 py-1 rounded-lg ${type.color}`}
                     >

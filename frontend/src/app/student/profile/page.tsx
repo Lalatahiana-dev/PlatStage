@@ -140,7 +140,7 @@ export default function StudentProfilePage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-1">Mon profil</h1>
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">Mon profil</h1>
         <p className="text-sm text-gray-500">Gérez vos informations personnelles et vos compétences.</p>
       </div>
 
@@ -185,7 +185,7 @@ export default function StudentProfilePage() {
             )}
 
             <form onSubmit={handleSave} className="flex flex-col gap-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-gray-600 mb-1">Téléphone</label>
                   <input
@@ -261,7 +261,7 @@ export default function StudentProfilePage() {
               ))}
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <select
                 value={selectedSkill}
                 onChange={(e) => setSelectedSkill(e.target.value)}

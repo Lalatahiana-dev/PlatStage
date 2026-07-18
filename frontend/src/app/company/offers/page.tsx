@@ -150,16 +150,16 @@ export default function CompanyOffersPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">
             Mes offres
           </h1>
           <p className="text-sm text-gray-500">Gérez vos offres de stage.</p>
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition"
         >
           <i className="ti ti-plus"></i>
           Nouvelle offre
@@ -224,7 +224,7 @@ export default function CompanyOffersPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-gray-600 mb-1">
                     Lieu
@@ -253,7 +253,7 @@ export default function CompanyOffersPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-gray-600 mb-1">
                     Date limite
@@ -322,9 +322,9 @@ export default function CompanyOffersPage() {
                 key={offer.id_offer}
                 className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition"
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
                       <h3 className="text-base font-semibold text-gray-800">
                         {offer.title}
                       </h3>
@@ -359,7 +359,7 @@ export default function CompanyOffersPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 ml-4 flex-shrink-0">
+                  <div className="flex items-center gap-2 sm:ml-4 flex-shrink-0 flex-wrap">
                     {offer.status === "DRAFT" && (
                       <button
                         onClick={() =>

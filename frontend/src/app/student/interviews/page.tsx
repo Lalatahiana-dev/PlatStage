@@ -94,7 +94,7 @@ export default function StudentInterviewsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
         {[
           {
             label: "Total",
@@ -152,11 +152,11 @@ export default function StudentInterviewsPage() {
             return (
               <div
                 key={interview.id_interview}
-                className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition"
+                className="bg-white border border-gray-100 rounded-xl p-4 sm:p-5 hover:shadow-sm transition"
               >
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   {/* Left */}
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                     <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600 flex-shrink-0">
                       <i className="ti ti-calendar text-lg"></i>
                     </div>
@@ -177,7 +177,7 @@ export default function StudentInterviewsPage() {
                   </div>
 
                   {/* Right */}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3 flex-wrap ml-[52px] sm:ml-0">
                     <span
                       className={`flex items-center gap-1 text-xs px-3 py-1 rounded-lg ${type.color}`}
                     >
