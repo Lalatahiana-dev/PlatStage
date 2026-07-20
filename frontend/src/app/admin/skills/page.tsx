@@ -133,6 +133,11 @@ export default function AdminSkillsPage() {
 
       {loading ? (
         <div className="text-sm text-gray-400">Chargement...</div>
+      ) : skills.length === 0 ? (
+        <div className="bg-white border border-gray-100 rounded-xl p-8 text-center">
+          <i className="ti ti-star text-4xl text-gray-300 mb-2 block"></i>
+          <p className="text-sm text-gray-400">Aucune compétence pour le moment.</p>
+        </div>
       ) : (
         <div className="flex flex-wrap gap-3">
           {skills.map((skill) => (

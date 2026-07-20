@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Put,
+  Patch,
   Delete,
   Param,
   Body,
@@ -15,7 +16,9 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { UpdateOfferDto } from './dto/update-offer.dto';
+import { BulkOfferStatusDto, BulkOfferDeleteDto } from './dto/admin-offer.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { OfferStatus } from '@prisma/client';
 
 @ApiTags('Offers')
 @Controller('offers')
@@ -48,10 +51,58 @@ export class OfferController {
     return this.offerService.removeCategory(id, id_category);
   }
 
+  @Get('admin/all')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Mahita offers rehetra (ADMIN)' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('ADMIN')
+  async findAllAdmin() {
+    return this.offerService.findAllAdmin();
+  }
+
+  @Post('admin/bulk/status')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Bulk update offer status (ADMIN)' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('ADMIN')
+  async bulkStatus(@Body() dto: BulkOfferStatusDto) {
+    return this.offerService.bulkUpdateStatus(dto.offerIds, dto.status);
+  }
+
+  @Post('admin/bulk/delete')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Bulk delete offers (ADMIN)' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('ADMIN')
+  async bulkDelete(@Body() dto: BulkOfferDeleteDto) {
+    return this.offerService.bulkRemove(dto.offerIds);
+  }
+
+  @Patch('admin/:id/status')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Manova status offer (ADMIN)' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('ADMIN')
+  async updateStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: { status: OfferStatus },
+  ) {
+    return this.offerService.updateStatus(id, body.status);
+  }
+
   @Get()
   @ApiOperation({ summary: 'Mahita offers published rehetra' })
   async findAll() {
     return this.offerService.findAll();
+  }
+
+  @Get('company/:id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Mahita offers an'ny company" })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('COMPANY', 'ADMIN')
+  async findByCompany(@Param('id', ParseIntPipe) id: number) {
+    return this.offerService.findByCompany(id);
   }
 
   @Get(':id')
@@ -67,15 +118,6 @@ export class OfferController {
   @Roles('ADMIN', 'COMPANY')
   async create(@Body() body: CreateOfferDto) {
     return this.offerService.create(body);
-  }
-
-  @Get('company/:id')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: "Mahita offers an'ny company" })
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('COMPANY', 'ADMIN')
-  async findByCompany(@Param('id', ParseIntPipe) id: number) {
-    return this.offerService.findByCompany(id);
   }
 
   @Put(':id')

@@ -13,11 +13,15 @@ export class UpdateCompanyDto {
   @IsOptional()
   description?: string;
 
-  @IsString() // ✅ esorina ny @IsUrl()
+  @IsString()
   @IsOptional()
   website?: string;
 
   @IsString()
   @IsOptional()
   address?: string;
+
+  @IsString()
+  @IsOptional()
+  logo_url?: string;
 }

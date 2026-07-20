@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Logo from '@/components/Logo';
 
 // ── Mock data ho an'ny hero cards ──────────────────────────────────────────
 const heroOffers = [
@@ -85,12 +86,7 @@ export default function Home() {
 
       {/* ── Navbar ───────────────────────────────────────────────────────── */}
       <nav className="px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center border-b border-gray-100 sticky top-0 bg-white/95 backdrop-blur z-50">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-sm shadow-indigo-300">
-            <span className="text-white font-black text-sm tracking-tight">P</span>
-          </div>
-          <span className="text-lg font-bold text-gray-900 tracking-tight">PlatStage</span>
-        </div>
+        <Logo size="md" />
         <div className="hidden md:flex items-center gap-6 text-sm text-gray-500">
           <Link href="/home" className="hover:text-indigo-600 transition">Offres</Link>
           <Link href="#features" className="hover:text-indigo-600 transition">Fonctionnalités</Link>
@@ -131,7 +127,7 @@ export default function Home() {
           </h1>
 
           <p className="text-base sm:text-lg text-gray-500 leading-relaxed mb-6 sm:mb-8 lg:mb-10 max-w-lg">
-            PlatStage connecte les étudiants malgaches avec les meilleures entreprises.
+            e-Stage connecte les étudiants malgaches avec les meilleures entreprises.
             Postulez, suivez, réussissez — tout en un seul endroit.
           </p>
 
@@ -370,10 +366,10 @@ export default function Home() {
             Prêt à commencer ?
           </p>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4 sm:mb-5 leading-tight">
-            Votre prochain stage est sur PlatStage
+            Votre prochain stage est sur e-Stage
           </h2>
           <p className="text-gray-400 mb-6 sm:mb-8 lg:mb-10 leading-relaxed">
-            Rejoignez des milliers d&apos;étudiants et d&apos;entreprises qui font confiance à PlatStage.
+            Rejoignez des milliers d&apos;étudiants et d&apos;entreprises qui font confiance à e-Stage.
             Inscription gratuite, en 2 minutes.
           </p>
           <div className="flex flex-wrap gap-3 sm:gap-4 justify-center">
@@ -396,14 +392,9 @@ export default function Home() {
       {/* ── Footer ───────────────────────────────────────────────────────── */}
       <footer className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 border-t border-gray-100 bg-white">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-indigo-600 rounded flex items-center justify-center">
-              <span className="text-white font-black text-xs">P</span>
-            </div>
-            <span className="text-sm font-bold text-gray-700 tracking-tight">PlatStage</span>
-          </div>
+          <Logo size="sm" />
           <p className="text-sm text-gray-400">
-            © 2026 PlatStage — Tous droits réservés
+            © 2026 e-Stage — Tous droits réservés
           </p>
           <div className="flex gap-5 text-sm text-gray-400">
             <Link href="/home" className="hover:text-indigo-600 transition">Offres</Link>

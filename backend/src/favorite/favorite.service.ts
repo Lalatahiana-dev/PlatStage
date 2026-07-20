@@ -29,13 +29,33 @@ export class FavoriteService {
           },
         },
       },
+      orderBy: { created_at: 'desc' },
     });
   }
 
-  async add(data: { id_student: number; id_offer: number }) {
-    return this.prisma.favorite.create({
-      data,
+  async findOfferIdsByStudent(id_student: number) {
+    const favorites = await this.prisma.favorite.findMany({
+      where: { id_student },
+      select: { id_offer: true },
     });
+    return favorites.map((f) => f.id_offer);
+  }
+
+  async add(data: { id_student: number; id_offer: number }) {
+    const existing = await this.prisma.favorite.findUnique({
+      where: {
+        id_student_id_offer: {
+          id_student: data.id_student,
+          id_offer: data.id_offer,
+        },
+      },
+    });
+
+    if (existing) {
+      return existing;
+    }
+
+    return this.prisma.favorite.create({ data });
   }
 
   async remove(id_favorite: number) {

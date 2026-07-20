@@ -12,8 +12,18 @@ interface Stats {
   accepted: number;
 }
 
+const colorMap: Record<string, string> = {
+  indigo: "bg-indigo-50 text-indigo-600",
+  green: "bg-green-50 text-green-600",
+  yellow: "bg-yellow-50 text-yellow-600",
+  emerald: "bg-emerald-50 text-emerald-600",
+  purple: "bg-purple-50 text-purple-600",
+  red: "bg-red-50 text-red-500",
+};
+
 export default function StudentPage() {
   const { user } = useAuthStore();
+  const [studentId, setStudentId] = useState<number | null>(null);
   const [stats, setStats] = useState<Stats>({
     offers: 0,
     applications: 0,
@@ -23,11 +33,25 @@ export default function StudentPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!user) return;
+    const fetchStudentId = async () => {
+      try {
+        const res = await api.get(`/students/user/${user.userId}`);
+        setStudentId(res.data.id_student);
+      } catch {
+        console.error("Erreur fetch student profile");
+      }
+    };
+    fetchStudentId();
+  }, [user]);
+
+  useEffect(() => {
+    if (!studentId) return;
     const fetchStats = async () => {
       try {
         const [offers, applications] = await Promise.all([
           api.get("/offers"),
-          api.get("/applications/student/2"),
+          api.get(`/applications/student/${studentId}`),
         ]);
 
         const apps = applications.data;
@@ -49,7 +73,7 @@ export default function StudentPage() {
     };
 
     fetchStats();
-  }, []);
+  }, [studentId]);
 
   return (
     <div>
@@ -110,7 +134,7 @@ export default function StudentPage() {
             >
               <div className="flex items-center gap-2 mb-3">
                 <div
-                  className={`w-8 h-8 rounded-lg flex items-center justify-center bg-${card.color}-50 text-${card.color}-600`}
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center ${colorMap[card.color]}`}
                 >
                   <i className={`ti ${card.icon} text-sm`}></i>
                 </div>
@@ -136,7 +160,7 @@ export default function StudentPage() {
             <span className="text-indigo-600">le bon stage.</span>
           </h2>
           <p className="text-sm text-gray-500 mb-4">
-            PlatStage vous aide à trouver, postuler et suivre vos stages en
+            e-Stage vous aide à trouver, postuler et suivre vos stages en
             toute simplicité.
           </p>
           <div className="flex flex-wrap gap-3">
@@ -220,12 +244,12 @@ export default function StudentPage() {
               className="bg-white border border-gray-100 rounded-xl p-4 text-center"
             >
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 bg-${step.color}-50 text-${step.color}-600`}
+                className={`w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 ${colorMap[step.color]}`}
               >
                 <i className={`ti ${step.icon} text-base`}></i>
               </div>
               <div
-                className={`text-xs font-medium mb-1 text-${step.color}-600`}
+                className={`text-xs font-medium mb-1 ${colorMap[step.color]}`}
               >
                 {step.num}. {step.label}
               </div>

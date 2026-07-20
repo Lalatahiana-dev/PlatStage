@@ -31,19 +31,20 @@ export class StudentController {
     return this.studentService.findAll();
   }
 
-  @Get(':id')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Mahita student iray' })
-  @UseGuards(AuthGuard('jwt'))
-  async findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.studentService.findOne(id);
-  }
   @Get('user/:id')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Mahita student profile arakaraka ny id_user' })
   @UseGuards(AuthGuard('jwt'))
   async findByUser(@Param('id', ParseIntPipe) id: number) {
     return this.studentService.findByUser(id);
+  }
+
+  @Get(':id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Mahita student iray' })
+  @UseGuards(AuthGuard('jwt'))
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.studentService.findOne(id);
   }
   @Post()
   @ApiBearerAuth()

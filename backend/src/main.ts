@@ -2,23 +2,28 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 import 'dotenv/config';
-console.log('JWT_SECRET =', process.env.JWT_SECRET);
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
 
-  // 🔐 GLOBAL VALIDATION (important pour DTO)
+async function bootstrap() {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  app.useStaticAssets(join(process.cwd(), 'uploads'), {
+    prefix: '/uploads',
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // remove unknown fields
+      whitelist: true,
       forbidNonWhitelisted: true,
-      transform: true, // convert payload to DTO class
+      transform: true,
     }),
   );
-  // 📖 SWAGGER
+
   const config = new DocumentBuilder()
-    .setTitle('PlatStage API')
-    .setDescription('API pour la plateforme de stage')
+    .setTitle('e-Stage API')
+    .setDescription('e-Stage – Connecter les étudiants et les entreprises pour des stages de qualité.')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
@@ -26,7 +31,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  // 🚀 CORS (frontend React/Vite)
   app.enableCors({
     origin: true,
     credentials: true,
@@ -34,5 +38,4 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3001);
 }
-
 bootstrap();

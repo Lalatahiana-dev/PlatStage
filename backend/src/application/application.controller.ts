@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Put,
+  Patch,
   Delete,
   Param,
   Body,
@@ -24,27 +25,23 @@ export class ApplicationController {
   constructor(private applicationService: ApplicationService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Mahita applications rehetra (ADMIN)' })
+  @ApiOperation({ summary: 'Get all applications (ADMIN)' })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('ADMIN')
   async findAll() {
     return this.applicationService.findAll();
   }
 
-  // ✅ alohan'ny :id
   @Get('student/:id')
-  @ApiOperation({
-    summary: "Mahita applications an'ny student (STUDENT/ADMIN)",
-  })
+  @ApiOperation({ summary: "Get student's applications (STUDENT/ADMIN)" })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('STUDENT', 'ADMIN')
   async findByStudent(@Param('id', ParseIntPipe) id: number) {
     return this.applicationService.findByStudent(id);
   }
 
-  // ✅ alohan'ny :id
   @Get('offer/:id')
-  @ApiOperation({ summary: "Mahita applications an'ny offer (COMPANY/ADMIN)" })
+  @ApiOperation({ summary: "Get applications for an offer (COMPANY/ADMIN)" })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('COMPANY', 'ADMIN')
   findByOffer(@Param('id', ParseIntPipe) id: number) {
@@ -52,7 +49,7 @@ export class ApplicationController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Mahita application iray (ADMIN/COMPANY)' })
+  @ApiOperation({ summary: 'Get application details (ADMIN/COMPANY)' })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('ADMIN', 'COMPANY')
   async findOne(@Param('id', ParseIntPipe) id: number) {
@@ -60,7 +57,7 @@ export class ApplicationController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Mampiditra candidature (STUDENT)' })
+  @ApiOperation({ summary: 'Submit application (STUDENT)' })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('STUDENT')
   async create(@Body() body: CreateApplicationDto) {
@@ -68,7 +65,7 @@ export class ApplicationController {
   }
 
   @Put(':id/status')
-  @ApiOperation({ summary: 'Manova status candidature (ADMIN/COMPANY)' })
+  @ApiOperation({ summary: 'Update application status (ADMIN/COMPANY)' })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('ADMIN', 'COMPANY')
   async updateStatus(
@@ -78,8 +75,19 @@ export class ApplicationController {
     return this.applicationService.updateStatus(id, body.status);
   }
 
+  @Patch(':id/notes')
+  @ApiOperation({ summary: 'Update application notes (COMPANY/ADMIN)' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('COMPANY', 'ADMIN')
+  async updateNotes(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: { notes: string },
+  ) {
+    return this.applicationService.updateNotes(id, body.notes);
+  }
+
   @Delete(':id')
-  @ApiOperation({ summary: 'Mamafa candidature (STUDENT/ADMIN)' })
+  @ApiOperation({ summary: 'Delete application (STUDENT/ADMIN)' })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('STUDENT', 'ADMIN')
   async remove(@Param('id', ParseIntPipe) id: number) {

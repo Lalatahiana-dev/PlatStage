@@ -19,21 +19,28 @@ export class FavoriteController {
 
   @Get('student/:id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('STUDENT', 'ADMIN') // ✅
+  @Roles('STUDENT', 'ADMIN')
   async findByStudent(@Param('id', ParseIntPipe) id: number) {
     return this.favoriteService.findByStudent(id);
   }
 
+  @Get('student/:id/ids')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('STUDENT', 'ADMIN')
+  async findOfferIdsByStudent(@Param('id', ParseIntPipe) id: number) {
+    return this.favoriteService.findOfferIdsByStudent(id);
+  }
+
   @Post()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('STUDENT') // ✅ STUDENT ihany
+  @Roles('STUDENT')
   async add(@Body() body: { id_student: number; id_offer: number }) {
     return this.favoriteService.add(body);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('STUDENT', 'ADMIN') // ✅
+  @Roles('STUDENT', 'ADMIN')
   async remove(@Param('id', ParseIntPipe) id: number) {
     return this.favoriteService.remove(id);
   }

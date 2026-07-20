@@ -45,3 +45,21 @@ export interface Application {
     company: { company_name: string };
   };
 }
+
+export interface Favorite {
+  id_favorite: number;
+  created_at: string;
+  offer: {
+    id_offer: number;
+    title: string;
+    location?: string;
+    salary?: number;
+    deadline?: string;
+    status: string;
+    company: {
+      company_name: string;
+      logo_url?: string;
+      sector?: string;
+    };
+  };
+}

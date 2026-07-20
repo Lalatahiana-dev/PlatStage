@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { RolesService } from '../roles/roles.service';
+import { CompanyService } from '../company/company.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
@@ -21,7 +22,8 @@ type UserWithRoles = {
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private rolesService: RolesService, // ✅ manampy
+    private rolesService: RolesService,
+    private companyService: CompanyService,
     private jwtService: JwtService,
   ) {}
 
@@ -38,11 +40,16 @@ export class AuthService {
       password: hashedPassword,
     });
 
-    // ✅ Assign role — STUDENT na COMPANY ihany, tsy ADMIN
     const roleName = data.role === 'COMPANY' ? 'COMPANY' : 'STUDENT';
     await this.rolesService.assignDefaultRole(user.id_user, roleName);
 
-    // ✅ Averina user miaraka amin'ny roles vaovao
+    if (roleName === 'COMPANY') {
+      await this.companyService.create({
+        company_name: `${data.prenom} ${data.nom}`,
+        id_user: user.id_user,
+      });
+    }
+
     const userWithRoles = await this.usersService.findByEmail(data.email);
     return this.signToken(userWithRoles as UserWithRoles);
   }
@@ -56,6 +63,8 @@ export class AuthService {
 
     const passwordMatch = await bcrypt.compare(data.password, user.password);
     if (!passwordMatch) throw new UnauthorizedException('Invalid credentials');
+
+    await this.usersService.updateLastLogin(user.id_user);
 
     return this.signToken(user);
   }

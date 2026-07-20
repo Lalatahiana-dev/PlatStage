@@ -13,6 +13,8 @@ model User {
   prenom        String
   email         String          @unique
   password      String
+  status        UserStatus      @default(ACTIVE)
+  last_login    DateTime?
   created_at    DateTime        @default(now())
   updated_at    DateTime        @updatedAt
   company       Company?
@@ -63,6 +65,7 @@ model Company {
   logo_url      String?
   address       String?
   is_verified   Boolean        @default(false)
+  status        CompanyStatus  @default(ACTIVE)
   created_at    DateTime       @default(now())
   updated_at    DateTime       @updatedAt
   id_user       Int            @unique
@@ -126,6 +129,7 @@ model OfferCategory {
 model Application {
   id_application Int               @id @default(autoincrement())
   motivation     String?
+  notes          String?
   status         ApplicationStatus @default(EN_ATTENTE)
   applied_at     DateTime          @default(now())
   updated_at     DateTime          @updatedAt
@@ -176,13 +180,21 @@ model Message {
 }
 
 model Interview {
-  id_interview   Int             @id @default(autoincrement())
-  scheduled_at   DateTime
-  location       String?
-  type           InterviewType
-  status         InterviewStatus @default(PENDING)
-  id_application Int             @unique
-  application    Application     @relation(fields: [id_application], references: [id_application], onDelete: Cascade)
+  id_interview      Int             @id @default(autoincrement())
+  scheduled_at      DateTime
+  location          String?
+  type              InterviewType
+  status            InterviewStatus @default(PENDING)
+  completed_at      DateTime?
+  rating            Int?
+  strengths         String?
+  weaknesses        String?
+  feedback_notes    String?
+  final_decision    String?
+  id_application    Int             @unique
+  application       Application     @relation(fields: [id_application], references: [id_application], onDelete: Cascade)
+  created_at        DateTime        @default(now())
+  updated_at        DateTime        @updatedAt
 }
 
 model Notification {
@@ -204,6 +216,9 @@ enum OfferStatus {
 
 enum ApplicationStatus {
   EN_ATTENTE
+  REVIEWING
+  SHORTLISTED
+  INTERVIEW_SCHEDULED
   ACCEPTEE
   REFUSEE
 }
@@ -224,4 +239,22 @@ enum NotificationType {
   ACCEPTED
   REFUSED
   NEW_MESSAGE
+  INTERVIEW_SCHEDULED
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum CompanyStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+model Setting {
+  id_setting Int    @id @default(autoincrement())
+  key        String @unique
+  value      String
+  updated_at DateTime @updatedAt
 }

@@ -1,8 +1,11 @@
-import { IsDateString, IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsOptional, IsString } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
 import { InterviewStatus, InterviewType } from '@prisma/client';
 
 export class UpdateInterviewDto {
-  @IsDateString()
+  @Transform(({ value }) => new Date(value))
+  @Type(() => Date)
+  @IsDate()
   @IsOptional()
   scheduled_at?: Date;
 

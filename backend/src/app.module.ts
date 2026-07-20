@@ -16,6 +16,9 @@ import { NotificationModule } from './notification/notification.module';
 import { ConversationModule } from './conversation/conversation.module';
 import { MessageModule } from './message/message.module';
 import { InterviewModule } from './interview/interview.module';
+import { MessagingModule } from './messaging/messaging.module';
+import { UploadModule } from './upload/upload.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -34,8 +37,11 @@ import { InterviewModule } from './interview/interview.module';
     ConversationModule,
     MessageModule,
     InterviewModule,
+    MessagingModule,
+    UploadModule,
+    SettingsModule,
   ],
   controllers: [AppController],
-  providers: [AppService], // ✅ esorina ny APP_GUARD
+  providers: [AppService],
 })
 export class AppModule {}

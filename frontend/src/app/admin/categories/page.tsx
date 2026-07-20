@@ -161,6 +161,11 @@ export default function AdminCategoriesPage() {
 
       {loading ? (
         <div className="text-sm text-gray-400">Chargement...</div>
+      ) : categories.length === 0 ? (
+        <div className="bg-white border border-gray-100 rounded-xl p-8 text-center">
+          <i className="ti ti-tag text-4xl text-gray-300 mb-2 block"></i>
+          <p className="text-sm text-gray-400">Aucune catégorie pour le moment.</p>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {categories.map((cat) => (

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Logo from '@/components/Logo';
 
 interface Offer {
   id_offer: number;
@@ -49,11 +50,8 @@ export default async function OffersPage() {
 
       {/* Navbar */}
       <nav className="px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center border-b border-gray-100 sticky top-0 bg-white/95 backdrop-blur z-50">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-black text-sm">P</span>
-          </div>
-          <span className="text-lg font-bold text-gray-900 tracking-tight">PlatStage</span>
+        <Link href="/" className="flex items-center">
+          <Logo size="md" />
         </Link>
         <div className="flex gap-3 items-center">
           <Link
@@ -213,13 +211,8 @@ export default async function OffersPage() {
       {/* Footer */}
       <footer className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 border-t border-gray-100">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-indigo-600 rounded flex items-center justify-center">
-              <span className="text-white font-black text-xs">P</span>
-            </div>
-            <span className="text-sm font-bold text-gray-700">PlatStage</span>
-          </div>
-          <p className="text-xs text-gray-400">© 2026 PlatStage</p>
+          <Logo size="sm" />
+          <p className="text-xs text-gray-400">© 2026 e-Stage</p>
           <Link href="/" className="text-xs text-gray-400 hover:text-indigo-600 transition">
             Retour à l&apos;accueil
           </Link>

@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Put,
+  Patch,
   Delete,
   Param,
   Body,
@@ -24,7 +25,7 @@ export class InterviewController {
   constructor(private interviewService: InterviewService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Mahita interviews rehetra (ADMIN)' })
+  @ApiOperation({ summary: 'Get all interviews (ADMIN)' })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('ADMIN')
   async findAll() {
@@ -32,30 +33,37 @@ export class InterviewController {
   }
 
   @Get('application/:id')
-  @ApiOperation({ summary: "Mahita interview an'ny application" })
+  @ApiOperation({ summary: "Get interview by application" })
   @UseGuards(AuthGuard('jwt'))
   findByApplication(@Param('id', ParseIntPipe) id: number) {
     return this.interviewService.findByApplication(id);
   }
 
-  // ✅ MANAMPY ITY — alohan'ny :id
   @Get('company/:id')
-  @ApiOperation({ summary: "Mahita interviews an'ny company (COMPANY/ADMIN)" })
+  @ApiOperation({ summary: "Get company's interviews (COMPANY/ADMIN)" })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('COMPANY', 'ADMIN')
   findByCompany(@Param('id', ParseIntPipe) id: number) {
     return this.interviewService.findByCompany(id);
   }
 
+  @Get('student/:id')
+  @ApiOperation({ summary: "Get student's interviews (STUDENT/ADMIN)" })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('STUDENT', 'ADMIN')
+  findByStudent(@Param('id', ParseIntPipe) id: number) {
+    return this.interviewService.findByStudent(id);
+  }
+
   @Get(':id')
-  @ApiOperation({ summary: 'Mahita interview iray' })
+  @ApiOperation({ summary: 'Get interview details' })
   @UseGuards(AuthGuard('jwt'))
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return this.interviewService.findOne(id);
   }
 
   @Post()
-  @ApiOperation({ summary: 'Mamorona interview (ADMIN/COMPANY)' })
+  @ApiOperation({ summary: 'Schedule interview (ADMIN/COMPANY)' })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('ADMIN', 'COMPANY')
   async create(@Body() body: CreateInterviewDto) {
@@ -63,7 +71,7 @@ export class InterviewController {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Manova interview (ADMIN/COMPANY)' })
+  @ApiOperation({ summary: 'Update interview (ADMIN/COMPANY)' })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('ADMIN', 'COMPANY')
   async update(
@@ -73,8 +81,34 @@ export class InterviewController {
     return this.interviewService.update(id, body);
   }
 
+  @Patch(':id/complete')
+  @ApiOperation({ summary: 'Mark interview as completed (COMPANY/ADMIN)' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('COMPANY', 'ADMIN')
+  async complete(@Param('id', ParseIntPipe) id: number) {
+    return this.interviewService.complete(id);
+  }
+
+  @Patch(':id/feedback')
+  @ApiOperation({ summary: 'Add interview feedback (COMPANY/ADMIN)' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('COMPANY', 'ADMIN')
+  async addFeedback(
+    @Param('id', ParseIntPipe) id: number,
+    @Body()
+    body: {
+      rating?: number;
+      strengths?: string;
+      weaknesses?: string;
+      feedback_notes?: string;
+      final_decision?: string;
+    },
+  ) {
+    return this.interviewService.addFeedback(id, body);
+  }
+
   @Delete(':id')
-  @ApiOperation({ summary: 'Mamafa interview (ADMIN/COMPANY)' })
+  @ApiOperation({ summary: 'Delete interview (ADMIN/COMPANY)' })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('ADMIN', 'COMPANY')
   async remove(@Param('id', ParseIntPipe) id: number) {

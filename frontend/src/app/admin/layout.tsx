@@ -37,6 +37,10 @@ export default function AdminLayout({
     { href: "/admin/skills", icon: "ti-star", label: "Compétences" },
   ];
 
+  const bottomNavItems = [
+    { href: "/admin/settings", icon: "ti-settings", label: "Paramètres" },
+  ];
+
   return (
     <div className="flex min-h-screen bg-gray-50 overflow-x-hidden">
       {sidebarOpen && (
@@ -78,6 +82,24 @@ export default function AdminLayout({
             </Link>
           ))}
         </nav>
+
+        <div className="border-t border-gray-100 mt-2 pt-2">
+          {bottomNavItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setSidebarOpen(false)}
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition ${
+                pathname === item.href
+                  ? "bg-indigo-50 text-indigo-600 font-medium"
+                  : "text-gray-500 hover:bg-gray-50"
+              }`}
+            >
+              <i className={`ti ${item.icon} text-base`}></i>
+              {item.label}
+            </Link>
+          ))}
+        </div>
 
         <button
           onClick={() => {

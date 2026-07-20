@@ -2,7 +2,10 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { useAuthStore } from "@/store/auth.store";
+import { useFavoritesStore } from "@/store/favorites.store";
 import api from "@/lib/axios";
+import FavoriteButton from "@/components/FavoriteButton";
 
 interface Offer {
   id_offer: number;
@@ -23,12 +26,32 @@ interface Offer {
 
 function OffersContent() {
   const searchParams = useSearchParams();
+  const { user } = useAuthStore();
+  const [studentId, setStudentId] = useState<number | null>(null);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(searchParams.get("q") ?? "");
   const [applying, setApplying] = useState<number | null>(null);
   const [success, setSuccess] = useState<number | null>(null);
   const [error, setError] = useState<number | null>(null);
+  const loadFavorites = useFavoritesStore((s) => s.load);
+
+  useEffect(() => {
+    if (!user) return;
+    const fetchStudentId = async () => {
+      try {
+        const res = await api.get(`/students/user/${user.userId}`);
+        setStudentId(res.data.id_student);
+      } catch {
+        console.error("Erreur fetch student profile");
+      }
+    };
+    fetchStudentId();
+  }, [user]);
+
+  useEffect(() => {
+    if (studentId) loadFavorites(studentId);
+  }, [studentId, loadFavorites]);
 
   useEffect(() => {
     const fetchOffers = async () => {
@@ -45,11 +68,12 @@ function OffersContent() {
   }, []);
 
   const handleApply = async (id_offer: number) => {
+    if (!studentId) return;
     setApplying(id_offer);
     setError(null);
     try {
       await api.post("/applications", {
-        id_student: 2,
+        id_student: studentId,
         id_offer,
         motivation: "",
       });
@@ -171,6 +195,13 @@ function OffersContent() {
                 </div>
 
                 <div className="flex flex-col items-start sm:items-end gap-2 sm:ml-4 flex-shrink-0">
+                  {studentId && (
+                    <FavoriteButton
+                      id_student={studentId}
+                      id_offer={offer.id_offer}
+                      size="md"
+                    />
+                  )}
                   {success === offer.id_offer ? (
                     <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-3 py-2 rounded-lg">
                       <i className="ti ti-circle-check"></i>

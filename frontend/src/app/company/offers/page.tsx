@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAuthStore } from "@/store/auth.store";
 import api from "@/lib/axios";
 
 interface Offer {
@@ -23,8 +24,11 @@ const statusConfig = {
 };
 
 export default function CompanyOffersPage() {
+  const { user } = useAuthStore();
+  const [companyId, setCompanyId] = useState<number | null>(null);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [companyNotFound, setCompanyNotFound] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Offer | null>(null);
   const [saving, setSaving] = useState(false);
@@ -37,23 +41,25 @@ export default function CompanyOffersPage() {
     deadline: "",
     status: "DRAFT",
   });
+
   useEffect(() => {
-    const loadOffers = async () => {
+    if (!user) return;
+    const fetchCompanyId = async () => {
       try {
-        const res = await api.get("/offers/company/2");
-        setOffers(res.data);
+        const res = await api.get(`/companies/user/${user.userId}`);
+        setCompanyId(res.data?.id_company ?? null);
       } catch {
-        console.error("Erreur fetch offers");
-      } finally {
+        setCompanyNotFound(true);
         setLoading(false);
       }
     };
-    loadOffers();
-  }, []);
-  // ✅ Fetch iray ihany
+    fetchCompanyId();
+  }, [user]);
+
   const fetchOffers = async () => {
+    if (!companyId) return;
     try {
-      const res = await api.get("/offers/company/2");
+      const res = await api.get(`/offers/company/${companyId}`);
       setOffers(res.data);
     } catch {
       console.error("Erreur fetch offers");
@@ -61,6 +67,23 @@ export default function CompanyOffersPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!companyId) return;
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const res = await api.get(`/offers/company/${companyId}`);
+        if (!cancelled) setOffers(res.data);
+      } catch {
+        if (!cancelled) console.error("Erreur fetch offers");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    load();
+    return () => { cancelled = true; };
+  }, [companyId]);
 
   const openCreate = () => {
     setEditing(null);
@@ -92,6 +115,7 @@ export default function CompanyOffersPage() {
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!companyId) return;
     setSaving(true);
     try {
       if (editing) {
@@ -117,7 +141,7 @@ export default function CompanyOffersPage() {
             ? new Date(form.deadline).toISOString()
             : undefined,
           status: form.status as "DRAFT" | "PUBLISHED" | "CLOSED",
-          id_company: 2,
+          id_company: companyId,
         });
       }
       setShowForm(false);
@@ -147,6 +171,31 @@ export default function CompanyOffersPage() {
       console.error("Erreur status change");
     }
   };
+
+  if (companyNotFound) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center max-w-md px-4">
+          <div className="w-20 h-20 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <i className="ti ti-building text-3xl text-indigo-400"></i>
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">
+            Profil entreprise non trouvé
+          </h2>
+          <p className="text-sm text-gray-500 mb-6">
+            Créez votre profil entreprise pour gérer vos offres de stage.
+          </p>
+          <a
+            href="/company/profile"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition shadow-sm"
+          >
+            <i className="ti ti-plus text-sm"></i>
+            Créer mon profil
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
